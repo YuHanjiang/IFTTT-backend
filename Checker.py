@@ -1,4 +1,4 @@
-import requests, pythonping
+import requests, pythonping, re, time
 
 
 # Checker class to be implemented in the backend of IFTTT
@@ -11,31 +11,74 @@ class Checker:
             self.relation = relation
             self.url = self.trigger.src
             self.method = self.trigger.method
-            self.val = self.trigger.condition
+            self.val = 0  
+            self.cmpFun = None
+
+    
+    def conditionParser(self):  
+         
+        reg = re.match("([<>=][<>=])([0-9]*|[0-9]*.[0.9]*)",self.trigger.condition) 
+        clause = reg.group(1) 
+        self.val = float(reg.group(2))
+
+        if clause == "==": 
+            self.cmpFun = self.equalequal 
+        elif clause == ">=": 
+            self.cmpFun = self.greaterequal 
+        elif clause == "<=": 
+            self.cmpFun = self.lesserequal
+
 
     # Start the checker and check what is the method of checking
     # The method returns true if the check satisfies the user's defined condition
-    def start(self):
-        if self.method is 'ping':
-            while not self.relation.isPulled:
-                if not self.ping_request(self.url, self.val):
-                    self.relation.isPulled = True
+    def start(self): 
+        
+        self.conditionParser() 
 
-        elif self.method is 'http':
+        if self.method == 'PING':
             while not self.relation.isPulled:
-                if not self.http_request(self.url):
-                    self.relation.isPulled = True
+                if self.ping_request(self.url, self.cmpFun, self.val):
+                    self.relation.isPulled = True 
+                time.sleep(0.5)
+
+        elif self.method == 'HTTPRESP':
+            while not self.relation.isPulled:
+                if self.http_request(self.url):
+                    self.relation.isPulled = True 
+                print("stable")
+                time.sleep(0.5) 
 
     # Ping a website and return whether the response time is smaller than the given value
     @staticmethod
-    def ping_request(url, val):
+    def ping_request(url,cmpFun,val):
         r = pythonping.ping(url, size=50)
 
-        return r.rtt_avg_ms < val
+        return cmpFun(a=r.rtt_avg_ms, b= val)
 
     # Send a http request to the given site and returns whether the site is reachable
     @staticmethod
     def http_request(url):
         r = requests.get(url)
 
-        return r.status_code is requests.codes.ok
+        return r.status_code is not requests.codes.ok 
+
+    @staticmethod
+    def equalequal(a,b): 
+        if a == b: 
+            return True 
+        else: 
+            return False 
+
+    @staticmethod
+    def greaterequal(a,b): 
+        if a >= b: 
+            return True 
+        else: 
+            return False 
+
+    @staticmethod
+    def lesserequal(a,b): 
+        if a <= b: 
+            return True 
+        else: 
+            return False

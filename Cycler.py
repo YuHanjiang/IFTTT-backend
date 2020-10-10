@@ -4,7 +4,8 @@ import json
 
 from Relation import Relation  
 from Trigger import Trigger 
-from OutputSource import OutputSource
+from OutputSource import OutputSource 
+from Checker import Checker
 
 class Cycler: 
     def __init__(self):
@@ -23,7 +24,7 @@ class Cycler:
                 trigger = Trigger(); 
                 trigger.src = r["trigger"]["src"]
                 trigger.method = r["trigger"]["method"] 
-                trigger.conditon = r["trigger"]["condition"]     
+                trigger.condition = r["trigger"]["condition"]     
                 trigger.interval = r["trigger"]["interval"] 
 
                 output = OutputSource() 
@@ -43,10 +44,9 @@ class Cycler:
     #create and start threads for each each relation with appropiat checker function
     def start_checkers(self):  
         for relation in self.relations:   
-            if relation.trigger.method == "TEST":
-                self.checkers.append(threading._start_new_thread(testChecker,(relation,)))
-            if relation.trigger.method == "HTTPRESP":  
-                self.checkers.append(threading._start_new_thread(testHTTPChecker,(relation,)))
+          
+                checker = Checker(relation)
+                self.checkers.append(threading._start_new_thread(checker.start,()))
 
 
 
@@ -56,8 +56,7 @@ class Cycler:
             for relation in self.relations: 
                 if relation.isPulled == True: 
                     self.sendOutputSource(relation)  
-                else:  
-                    print("stable")  
+               
 
             time.sleep(0.5)
         

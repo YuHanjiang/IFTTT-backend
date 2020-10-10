@@ -5,9 +5,10 @@ import requests, pythonping
 class Checker:
 
     # Initialize Checker object and input the trigger
-    def __init__(self, trigger):
-        if trigger is not None:
-            self.trigger = trigger
+    def __init__(self, relation):
+        if relation is not None:
+            self.trigger = relation.trigger
+            self.relation = relation
             self.url = self.trigger.src
             self.method = self.trigger.method
             self.val = self.trigger.condition
@@ -16,10 +17,14 @@ class Checker:
     # The method returns true if the check satisfies the user's defined condition
     def start(self):
         if self.method is 'ping':
-            return self.ping_request(self.url, self.val)
+            while not self.relation.isPulled:
+                if not self.ping_request(self.url, self.val):
+                    self.relation.isPulled = True
 
         elif self.method is 'http':
-            return self.http_request(self.url)
+            while not self.relation.isPulled:
+                if not self.http_request(self.url):
+                    self.relation.isPulled = True
 
     # Ping a website and return whether the response time is smaller than the given value
     @staticmethod
@@ -34,5 +39,3 @@ class Checker:
         r = requests.get(url)
 
         return r.status_code is requests.codes.ok
-
-

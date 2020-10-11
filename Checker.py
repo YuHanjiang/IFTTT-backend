@@ -11,8 +11,9 @@ class Checker:
             self.relation = relation
             self.url = self.trigger.src
             self.method = self.trigger.method
-            self.val = 0
-            self.cmpFun = None
+            self.val = 0  
+            self.cmpFun = None 
+            self.interval = self.trigger.interval
 
     def conditionParser(self):
 
@@ -36,17 +37,14 @@ class Checker:
         if self.method == 'PING':
             while not self.relation.isPulled:
                 if self.ping_request(self.url, self.cmpFun, self.val):
-                    self.relation.isPulled = True
-                time.sleep(0.5)
+                    self.relation.isPulled = True 
+                time.sleep(self.interval)
 
         elif self.method == 'HTTPRESP':
             while not self.relation.isPulled:
                 if self.http_request(self.url):
-                    self.relation.isPulled = True
-                print("stable")
-                time.sleep(0.5)
-
-                # Ping a website and return whether the response time is smaller than the given value
+                    self.relation.isPulled = True 
+                time.sleep(self.interval) 
 
     @staticmethod
     def ping_request(url, cmpFun, val):
@@ -56,8 +54,11 @@ class Checker:
 
     # Send a http request to the given site and returns whether the site is reachable
     @staticmethod
-    def http_request(url):
-        r = requests.get(url)
+    def http_request(url): 
+        try:
+            r = requests.get(url) 
+        except requests.exceptions.RequestException as err: 
+            return True
 
         return r.status_code is not requests.codes.ok
 

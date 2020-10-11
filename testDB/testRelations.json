@@ -1,10 +1,27 @@
 [
     {
         "trigger" : {
+                        "src": "vocation.cs.umd.edu", 
+                        "method": "PING", 
+                        "condition": ">=50", 
+                        "interval": 2.0 
+
+                    }, 
+        "output" : { 
+                        "text" : "Low Ping or Can't Reach", 
+                        "key": 0, 
+                        "severity": 3, 
+                        "audience": []
+
+                    }    
+    }, 
+
+    {
+        "trigger" : {
                         "src": "http://vocation.cs.umd.edu/flask/", 
                         "method": "HTTPRESP", 
                         "condition": "==6", 
-                        "interval": "2.0" 
+                        "interval": 2.0 
 
                     }, 
         "output" : { 
@@ -15,7 +32,6 @@
 
                     }    
     }
-
 
 
 

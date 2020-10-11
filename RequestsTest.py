@@ -9,7 +9,10 @@ def get_requests(url):
     print(r.status_code)
     print(r.headers['content-type'])
     if r.status_code == requests.codes.ok:
-        print(r.text)
+        json_response = r.json()
+        print(json_response['result'])
+        for ele in json_response['result']:
+            print(ele['message'])
 
 
 def ping_website(url, size):
@@ -26,6 +29,6 @@ def http_heal_check(url):
         return False
 
 
-ping_website('8.8.8.8', 40)
+# ping_website('8.8.8.8', 40)
 
-get_requests('http://vocation.cs.umd.edu/flask/')
+get_requests('http://vocation.cs.umd.edu/flask/helloworld/')

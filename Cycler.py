@@ -52,10 +52,14 @@ class Cycler:
 
     #checks the relations to see if any have been set to true then sends output src
     def monitor(self):  
-        while True:
-            for relation in self.relations: 
-                if relation.isPulled == True: 
-                    self.sendOutputSource(relation)  
+        while True: 
+            length = range(len(self.relations))
+            for i in length:
+                if self.relations[i].isPulled == True: 
+                    self.sendOutputSource(self.relations[i])  
+                    self.relations.pop(i) 
+                    length = range(len(self.relations)) 
+            print("NEXT CHECK")
                
 
             time.sleep(0.5)

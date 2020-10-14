@@ -1,7 +1,7 @@
-class Trigger:  
+class Trigger:
 
-    def __init__(self):
-        self.src = None #URL Object 
-        self.method = "" 
-        self.condition = ""  
-        self.interval = 1.0
+    def __init__(self, src, method, condition, interval):
+        self.src = src
+        self.method = method
+        self.condition = condition
+        self.interval = interval

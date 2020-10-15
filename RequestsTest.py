@@ -1,6 +1,12 @@
 import requests
 from pythonping import ping
+from pymongo import MongoClient
 
+def test_mongo():
+    client = MongoClient('vocation.cs.umd.edu', 27017)
+    db = client.testdb
+    serverStatusResult = db.command("serverStatus")
+    print(serverStatusResult)
 
 def get_requests(url):
     # Get http request from given url
@@ -31,4 +37,6 @@ def http_heal_check(url):
 
 # ping_website('8.8.8.8', 40)
 
-get_requests('http://vocation.cs.umd.edu/flask/helloworld/')
+# get_requests('http://vocation.cs.umd.edu/flask/helloworld/')
+
+test_mongo()

@@ -1,66 +1,55 @@
 import requests, pythonping, re, time
 
 
-# Checker class to be implemented in the backend of IFTTT
+# abstract Checker class to be implemented in the backend of IFTTT
 class Checker:
 
     # Initialize Checker object and input the trigger
-    def __init__(self, relation):
-        if relation is not None:
-            self.trigger = relation.trigger
-            self.relation = relation
-            self.url = self.trigger.src
-            self.method = self.trigger.method
-            self.val = 0  
-            self.cmpFun = None 
-            self.interval = self.trigger.interval
+    def __init__(self, trigger): 
+        self.conditionMet = False 
 
-    def conditionParser(self):
+        if trigger is not None:
+            self.triggerId = trigger.id
+            self.src = trigger.src
+            self.method = trigger.method 
+            self.conditions = trigger.conditions
+            self.interval = trigger.interval 
 
-        reg = re.match("([<>=][<>=])([0-9]*|[0-9]*.[0.9]*)", self.trigger.condition)
-        clause = reg.group(1)
-        self.val = float(reg.group(2))
+      
+        self.funcList = [] 
+        self.paraList = []  
 
-        if clause == "==":
-            self.cmpFun = self.equalequal
-        elif clause == ">=":
-            self.cmpFun = self.greaterequal
-        elif clause == "<=":
-            self.cmpFun = self.lesserequal
+
+    
+       
+    def _mapper(self): 
+        pass 
+
+    def _dicParsaer(self):   
+            funcs = self._mapper()  
+
+            for key in self.conditions.keys(): 
+                self.funcList.append(funcs[key]) 
+
+            for string in self.conditions.values():  
+                reg = re.match("([<>=][<>=])([0-9]*|[0-9]*.[0.9]*)", string)
+                clause = reg.group(1)
+                val = float(reg.group(2))
+
+                if clause == "==":
+                    cmpFun = self.equalequal
+                elif clause == ">=":
+                    cmpFun = self.greaterequal
+                elif clause == "<=":
+                    cmpFun = self.lesserequal
+                
+                self.paraList.append((cmpFun, val)) 
+    
 
     # Start the checker and check what is the method of checking
-    # The method returns true if the check satisfies the user's defined condition
-    def start(self):
+    # The method returns true if the check satisfies the user's defined condition 
 
-        self.conditionParser()
-
-        if self.method == 'PING':
-            while not self.relation.isPulled:
-                if self.ping_request(self.url, self.cmpFun, self.val):
-                    self.relation.isPulled = True 
-                time.sleep(self.interval)
-
-        elif self.method == 'HTTPRESP':
-            while not self.relation.isPulled:
-                if self.http_request(self.url):
-                    self.relation.isPulled = True 
-                time.sleep(self.interval) 
-
-    @staticmethod
-    def ping_request(url, cmpFun, val):
-        r = pythonping.ping(url, size=50)
-
-        return cmpFun(a=r.rtt_avg_ms, b=val)
-
-    # Send a http request to the given site and returns whether the site is reachable
-    @staticmethod
-    def http_request(url): 
-        try:
-            r = requests.get(url) 
-        except requests.exceptions.RequestException as err: 
-            return True
-
-        return r.status_code is not requests.codes.ok
+   
 
     @staticmethod
     def equalequal(a, b):
@@ -82,3 +71,19 @@ class Checker:
             return True
         else:
             return False
+
+
+##***PUBLIC FUNCTIONS***##
+def run(self):
+
+        
+        self._dicParsaer(self);  
+
+        while(True): 
+
+            for i in range(len(self.funcList)): 
+                if self.funcList[i](self.paraList[i][0],self.paraList[i][1]) == True: 
+                    self.conditionMet = True 
+                    break
+
+            time.sleep(self.interval) 

@@ -4,11 +4,13 @@ from Checker import Checker
 
 class WebsiteHealthChecker(Checker): 
      
-    def _mapper(self):  
+   
+    
+    def mapper(self):  
         varToFuncMapping = {}       
         varToFuncMapping["PING"] = self._ping_check 
         varToFuncMapping["HTTPRESP"] = self._HTTPRESP_check 
-        return varToFuncMapping
+        self.map = varToFuncMapping
 
     def _ping_check(self, func, val): 
         r = pythonping.ping(self.src, size=50)

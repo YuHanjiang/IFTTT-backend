@@ -17,19 +17,20 @@ class Checker:
 
       
         self.funcList = [] 
-        self.paraList = []  
+        self.paraList = []   
+        self.map = {}
 
 
     
        
-    def _mapper(self): 
+    def mapper(self): 
         pass 
 
     def _dicParsaer(self):   
-            funcs = self._mapper()  
+              
 
             for key in self.conditions.keys(): 
-                self.funcList.append(funcs[key]) 
+                self.funcList.append(self.map[key]) 
 
             for string in self.conditions.values():  
                 reg = re.match("([<>=][<>=])([0-9]*|[0-9]*.[0.9]*)", string)

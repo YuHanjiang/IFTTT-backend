@@ -3,12 +3,22 @@ from pythonping import ping
 from pymongo import MongoClient
 
 
-def test_mongo():
+def show_mongo():
     client = MongoClient('vocation.cs.umd.edu', 27017)
-    db = client.testdb
-    serverStatusResult = db.command("serverStatus")
-    print(serverStatusResult)
+    db = client.IFTTT_database
+    information = db.information
+    cursor = information.find({})
+    for c in cursor:
+        print(c)
 
+
+def add_mongo(name, message):
+    client = MongoClient('vocation.cs.umd.edu', 27017)
+    db = client.IFTTT_database
+    information = db.information
+    entry = {'name': name, 'message': message}
+    x = information.insert_one(entry)
+    print(x)
 
 def get_requests(url):
     # Get http request from given url
@@ -41,4 +51,8 @@ def http_heal_check(url):
 
 # get_requests('http://vocation.cs.umd.edu/flask/helloworld/')
 
-test_mongo()
+show_mongo()
+
+add_mongo('Hanjiang Yu', 'Hi!')
+
+show_mongo()

@@ -1,4 +1,7 @@
-import requests, pythonping, re, time
+import pythonping
+import re
+import requests
+import time
 
 
 # abstract Checker class to be implemented in the backend of IFTTT
@@ -16,14 +19,14 @@ class Checker:
             self.interval = trigger.interval 
 
       
-        self.funcList = [] 
+        self.funcList = []
         self.paraList = []  
 
 
     
        
     def _mapper(self): 
-        pass 
+        pass
 
     def _dicParsaer(self):   
             funcs = self._mapper()  
@@ -86,4 +89,4 @@ def run(self):
                     self.conditionMet = True 
                     break
 
-            time.sleep(self.interval) 
+            time.sleep(self.interval)

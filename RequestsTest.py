@@ -20,6 +20,7 @@ def add_mongo(name, message):
     x = information.insert_one(entry)
     print(x)
 
+
 def get_requests(url):
     # Get http request from given url
     r = requests.get(url)

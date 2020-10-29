@@ -1,26 +1,22 @@
 import threading
-import time
 import json
 import ServerIO
 
 from Relation import Relation
 from Trigger import Trigger
 from OutputSource import OutputSource
-from Checker import Checker
+from Monitor import Monitor
 
 url = ''
 
 
-def sendOutputSource(relation):
-    print(relation.outputSource.text)
-
-    # Code below is used to send relation's output to the server
-    # @todo
-    # output_json = relation.outputSource.make_json()
-    # ServerIO.send_server_request(url, output_json)
+# Code below is used to send relation's output to the server
+# @todo
+# output_json = relation.outputSource.make_json()
+# ServerIO.send_server_request(url, output_json)
 
 
-class Cycler:
+class Orchestrator:
     def __init__(self):
         self.checkers = []  # collection of threads that will run checker functions
         self.relations = []  # relations
@@ -55,32 +51,27 @@ class Cycler:
     # create and start threads for each each relation with appropriate checker function
     def start_checkers(self):
         for relation in self.relations:
-            checker = Checker(relation)
+            checker = Monitor(relation)
             self.checkers.append(threading._start_new_thread(checker.start, ()))
 
     # checks the relations to see if any have been set to true then sends output src
-    def monitor(self):
-        while True:
-            length = range(len(self.relations))
-            for i in length:
-                if self.relations[i].isPulled:
-                    sendOutputSource(self.relations[i])
-                    self.relations.pop(i)
-                    length = range(len(self.relations))
-            print("NEXT CHECK")
-
-            time.sleep(0.5)
-
-
-# def testChecker(relation):
-#     while True:
-#         if 5 > 10:
-#             relation.isPulled = True
-#             break
-#         time.sleep(0.5)
+    # def monitor(self):
+    #     while True:
+    #         length = range(len(self.relations))
+    #         for i in length:
+    #             if self.relations[i].isPulled:
+    #                 sendOutputSource(self.relations[i])
+    #                 self.relations.pop(i)
+    #                 length = range(len(self.relations))
+    #         print("NEXT CHECK")
+    #
+    #         time.sleep(0.5)
 
 
-cycler = Cycler()
-cycler.load_from_dataBase()
-cycler.start_checkers()
-cycler.monitor()
+def __main__():
+    orchestrator = Orchestrator()
+    orchestrator.load_from_dataBase()
+    orchestrator.start_checkers()
+
+
+__main__()

@@ -11,7 +11,7 @@ class Checker:
         if trigger is not None:
             self.triggerId = trigger.id
             self.src = trigger.src
-            self.method = trigger.method 
+            self.checker = trigger.checker
             self.conditions = trigger.conditions
             self.interval = trigger.interval 
 
@@ -74,11 +74,11 @@ class Checker:
             return False
 
 
-##***PUBLIC FUNCTIONS***##
-def run(self):
+    ##***PUBLIC FUNCTIONS***##
+    def run(self):
 
         
-        self._dicParsaer(self);  
+        self._dicParsaer()  
 
         while(True): 
 

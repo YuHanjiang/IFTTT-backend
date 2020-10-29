@@ -6,13 +6,14 @@ import ServerIO
 from Relation import Relation
 from Trigger import Trigger
 from OutputSource import OutputSource
-from Checker import Checker
+from Checker import Checker 
+from WebsiteHealthChecker import WebsiteHealthChecker
 
 url = ''
 
 
-def sendOutputSource(relation):
-    print(relation.outputSource.text)
+def sendTriggerID(trigger):
+    print(trigger.text)
 
     # Code below is used to send relation's output to the server
     # @todo
@@ -22,22 +23,19 @@ def sendOutputSource(relation):
 
 class Cycler:
     def __init__(self):
-        self.checkers = []  # collection of threads that will run checker functions
-        self.relations = []  # relations
+        self.checkers = []  # collection of threads that will run checker functions 
+        self.checkersThreads = []
+        self.triggers = []  # relations
 
         self.testCheckerItem = 0
 
     def read_json(self, relationsDB):
 
-        for r in relationsDB:
-            t = r['trigger']
-            o = r['output']
-            trigger = Trigger(t['src'], t['method'], t['condition'], t['interval'])
-            output = OutputSource(o['text'], o['severity'], o['key'], o['audience'])
+        for t in relationsDB:
 
-            relation = Relation(trigger, output)
+            trigger = Trigger(src=t['src'], checker=t['checker'], conditions= t['conditions'], interval=t['interval'], id=t['id'], text=t['text'])
 
-            self.relations.append(relation)
+            self.triggers.append(trigger)
 
     # creates the relation objects based off of the database form sever-admin side
     def load_from_dataBase(self):
@@ -54,19 +52,24 @@ class Cycler:
 
     # create and start threads for each each relation with appropriate checker function
     def start_checkers(self):
-        for relation in self.relations:
-            checker = Checker(relation)
-            self.checkers.append(threading._start_new_thread(checker.start, ()))
+        for trigger in self.triggers: 
+            if trigger.checker == "WebsiteHealthChecker": 
+                checker = WebsiteHealthChecker(trigger) 
+            checker.mapper()  
+            self.checkers.append(checker)
+            self.checkersThreads.append(threading._start_new_thread(checker.run, ()))
 
     # checks the relations to see if any have been set to true then sends output src
     def monitor(self):
         while True:
-            length = range(len(self.relations))
+            length = range(len(self.triggers))
             for i in length:
-                if self.relations[i].isPulled:
-                    sendOutputSource(self.relations[i])
-                    self.relations.pop(i)
-                    length = range(len(self.relations))
+                if self.checkers[i].conditionMet:
+                    sendTriggerID(self.triggers[i])
+                    self.checkers.pop(i)
+                    self.checkersThreads.pop(i)
+                    self.triggers.pop(i)
+                    length = range(len(self.checkers))
             print("NEXT CHECK")
 
             time.sleep(0.5)

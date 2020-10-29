@@ -4,6 +4,8 @@ from Checker import Checker
 
 class WebsiteHealthChecker(Checker): 
      
+    def __init__(self,trigger): 
+        super().__init__(trigger)
    
     
     def mapper(self):  
@@ -19,7 +21,7 @@ class WebsiteHealthChecker(Checker):
 
     def _HTTPRESP_check(self,func,val): 
         try:
-            r = requests.get(self.src) 
+            r = requests.get("http://"+self.src) 
         except requests.exceptions.RequestException as err: 
             return True
 

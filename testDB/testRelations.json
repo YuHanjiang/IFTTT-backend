@@ -1,38 +1,12 @@
 [
-    {
-        "trigger" : {
-                        "src": "vocation.cs.umd.edu", 
-                        "method": "PING", 
-                        "condition": ">=50", 
-                        "interval": 2.0 
+    
+                    {
+                        "src": "google.com",  
+                        "id": 0,
+                        "checker": "WebsiteHealthChecker", 
+                        "conditions": {"PING" : ">=50", "HTTPRESP" : "==400"}, 
+                        "interval": 2.0,  
+                        "text": "website down"
 
-                    }, 
-        "output" : { 
-                        "text" : "Low Ping or Can't Reach", 
-                        "key": 0, 
-                        "severity": 3, 
-                        "audience": []
-
-                    }    
-    }, 
-
-    {
-        "trigger" : {
-                        "src": "http://vocation.cs.umd.edu/flask/", 
-                        "method": "HTTPRESP", 
-                        "condition": "==6", 
-                        "interval": 2.0 
-
-                    }, 
-        "output" : { 
-                        "text" : "WEBSITE IS DOWN", 
-                        "key": 0, 
-                        "severity": 3, 
-                        "audience": []
-
-                    }    
-    }
-
-
-
+                    }
 ]

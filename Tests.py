@@ -1,6 +1,7 @@
 import requests
 from pythonping import ping
 from pymongo import MongoClient
+import importlib
 
 
 def show_mongo():
@@ -47,13 +48,7 @@ def http_heal_check(url):
     else:
         return False
 
-
 # ping_website('8.8.8.8', 40)
 
 # get_requests('http://vocation.cs.umd.edu/flask/helloworld/')
 
-show_mongo()
-
-add_mongo('Hanjiang Yu', 'Hi!')
-
-show_mongo()

@@ -9,7 +9,8 @@ def mysql_request():
         host="localhost",
         user="root",
         password="63MH0UT7DCW30",
-        database="ifttt"
+        database="ifttt",
+        auth_plugin='mysql_native_password'
     )
     print(mydb)
 

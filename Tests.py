@@ -1,25 +1,25 @@
 import requests
 from pythonping import ping
-from pymongo import MongoClient
+import mysql.connector
 import importlib
 
 
-def show_mongo():
-    client = MongoClient('vocation.cs.umd.edu', 27017)
-    db = client.IFTTT_database
-    information = db.information
-    cursor = information.find({})
-    for c in cursor:
-        print(c)
+def mysql_request():
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="63MH0UT7DCW30",
+        database="ifttt"
+    )
+    print(mydb)
 
+    cursor = mydb.cursor()
 
-def add_mongo(name, message):
-    client = MongoClient('vocation.cs.umd.edu', 27017)
-    db = client.IFTTT_database
-    information = db.information
-    entry = {'name': name, 'message': message}
-    x = information.insert_one(entry)
-    print(x)
+    cursor.execute("Select * from Triggers")
+
+    result = cursor.fetchall()
+    for r in result:
+        print(r)
 
 
 def get_requests(url):
@@ -52,3 +52,4 @@ def http_heal_check(url):
 
 # get_requests('http://vocation.cs.umd.edu/flask/helloworld/')
 
+mysql_request()

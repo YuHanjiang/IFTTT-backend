@@ -20,7 +20,9 @@ def mysql_request():
 
     result = cursor.fetchall()
     for r in result:
-        print(r)
+        (a1, a2, a3, a4, a5, a6, a7, a8) = r
+        print(a1)
+        print(a2)
 
 
 def get_requests(url):

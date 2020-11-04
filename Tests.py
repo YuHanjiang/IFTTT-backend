@@ -16,7 +16,7 @@ def mysql_request():
 
     cursor = mydb.cursor()
 
-    cursor.execute("Select * from Triggers")
+    cursor.execute("Select * from triggers")
 
     result = cursor.fetchall()
     for r in result:

@@ -21,7 +21,8 @@ def mysql_request():
     result = cursor.fetchall()
     for r in result:
         (owner, name, trigger_id, monitor_type, condition, severity, url, message) = r
-        print(monitor_type.strip() is 'WebsiteHealthMonitor')
+        print(monitor_type)
+        print(monitor_type is 'Website Health Monitor')
 
 
 def get_requests(url):

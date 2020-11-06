@@ -9,6 +9,10 @@ from Monitor import Monitor
 
 url = ''
 
+api_url = '127.0.0.1'
+api_user = 'root'
+api_pwd = '63MH0UT7DCW30'
+
 
 # Code below is used to send relation's output to the server
 # @todo
@@ -23,54 +27,16 @@ class Orchestrator:
 
         self.testCheckerItem = 0
 
-    def read_json(self, relationsDB):
-
-        for r in relationsDB:
-            t = r['trigger']
-            o = r['output']
-            trigger = Trigger(t['src'], t['method'], t['condition'], t['interval'])
-            output = OutputSource(o['text'], o['severity'], o['key'], o['audience'])
-
-            relation = Relation(trigger, output)
-
-            self.relations.append(relation)
-
-    # creates the relation objects based off of the database form sever-admin side
-    def load_from_dataBase(self):
-        with open("testDB/testRelations.json") as file:
-            relationsDB = json.load(file)
-
-            self.read_json(relationsDB)
-
-        print("relations loaded")
-
-    def load_data_from_server(self):
-        relationsDB = ServerIO.get_server_request(url)
-        self.read_json(relationsDB)
-
     # create and start threads for each each relation with appropriate checker function
-    def start_checkers(self):
+    def start_monitors(self):
         for relation in self.relations:
             checker = Monitor(relation)
             self.checkers.append(threading._start_new_thread(checker.start, ()))
-
-    # checks the relations to see if any have been set to true then sends output src
-    # def monitor(self):
-    #     while True:
-    #         length = range(len(self.relations))
-    #         for i in length:
-    #             if self.relations[i].isPulled:
-    #                 sendOutputSource(self.relations[i])
-    #                 self.relations.pop(i)
-    #                 length = range(len(self.relations))
-    #         print("NEXT CHECK")
-    #
-    #         time.sleep(0.5)
-
+            
 
 def __main__():
     orchestrator = Orchestrator()
-    orchestrator.load_from_dataBase()
+    trigger_list = ServerIO.read_triggers(api_url, api_user, api_pwd)
     orchestrator.start_checkers()
 
 

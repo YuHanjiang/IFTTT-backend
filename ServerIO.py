@@ -1,12 +1,30 @@
-import requests
+import mysql.connector
+from Trigger import Trigger
 
 
-def get_server_request(url):
-    r = requests.get(url)
+def read_triggers(url, user, pwd):
+    trigger_list = []
 
-    if r.status_code == requests.codes.ok:
-        return r.json()
+    db = mysql.connector.connect(
+        host=url,
+        user=user,
+        password=pwd,
+        database="ifttt"
+    )
+
+    cursor = db.cursor()
+
+    cursor.execute('SELECT * FROM triggers')
+
+    trigger_query = cursor.fetchall()
+    for t in trigger_query:
+        (owner, name, trigger_id, monitor_type, condition, severity, url, message) = t
+        trigger = Trigger(url, monitor_type, condition, severity)
+
+        trigger_list.append(trigger)
+
+    return trigger_list
 
 
-def send_server_request(url, json):
-    requests.post(url, json=json)
+def notify_api(url, user, pwd):
+    pass

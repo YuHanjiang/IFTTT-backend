@@ -1,7 +1,7 @@
 class Trigger:
 
-    def __init__(self, src, method, condition, interval):
+    def __init__(self, src, monitor, condition, severity):
         self.src = src
-        self.method = method
         self.condition = condition
-        self.interval = interval
+        self.severity = severity
+        self.monitor = monitor

@@ -13,16 +13,16 @@ def mysql_request():
         auth_plugin='mysql_native_password'
     )
     print(mydb)
+    #
+    # cursor = mydb.cursor()
 
-    cursor = mydb.cursor()
-
-    cursor.execute("Select * from triggers")
-
-    result = cursor.fetchall()
-    for r in result:
-        (a1, a2, a3, a4, a5, a6, a7, a8) = r
-        print(a1)
-        print(a2)
+    # cursor.execute("Select * from triggers")
+    #
+    # result = cursor.fetchall()
+    # for r in result:
+    #     (a1, a2, a3, a4, a5, a6, a7, a8) = r
+    #     print(a1)
+    #     print(a2)
 
 
 def get_requests(url):

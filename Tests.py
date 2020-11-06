@@ -13,16 +13,15 @@ def mysql_request():
         auth_plugin='mysql_native_password'
     )
     print(mydb)
-    #
-    # cursor = mydb.cursor()
 
-    # cursor.execute("Select * from triggers")
-    #
-    # result = cursor.fetchall()
-    # for r in result:
-    #     (a1, a2, a3, a4, a5, a6, a7, a8) = r
-    #     print(a1)
-    #     print(a2)
+    cursor = mydb.cursor()
+
+    cursor.execute("Select * from triggers")
+
+    result = cursor.fetchall()
+    for r in result:
+        (owner, name, trigger_id, monitor_type, condition, severity, url, message) = r
+        print(monitor_type.strip() is 'WebsiteHealthMonitor')
 
 
 def get_requests(url):
@@ -50,6 +49,7 @@ def http_heal_check(url):
         return True
     else:
         return False
+
 
 # ping_website('8.8.8.8', 40)
 

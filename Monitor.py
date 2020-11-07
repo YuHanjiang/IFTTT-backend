@@ -8,15 +8,27 @@ import ServerIO
 class Monitor:
 
     # Initialize Monitor object and input the trigger
+
+    def run(self):
+        self._dicParser()
+        while True:
+            for i in range(len(self.funcList)):
+                if self.funcList[i](self.paraList[i][0], self.paraList[i][1]):
+                    self.conditionMet = True
+                    print('NOTIFY')
+                else:
+                    print('Satisfy')
+                    break
+            time.sleep(60)
+
     def __init__(self, trigger):
         self.conditionMet = False
 
         if trigger is not None:
-            self.triggerId = trigger.id
+            self.triggerId = trigger.trigger_id
             self.src = trigger.src
             self.method = trigger.method
-            self.conditions = trigger.conditions
-            self.interval = trigger.interval
+            self.conditions = trigger.condition
 
         self.funcList = []
         self.paraList = []
@@ -73,14 +85,4 @@ class Monitor:
 
 
 # PUBLIC FUNCTIONS
-def run(self):
-    self._dicParsaer(self)
 
-    while True:
-
-        for i in range(len(self.funcList)):
-            if self.funcList[i](self.paraList[i][0], self.paraList[i][1]):
-                self.conditionMet = True
-                break
-
-        time.sleep(self.interval)

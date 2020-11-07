@@ -22,7 +22,7 @@ def mysql_request():
     for r in result:
         (owner, name, trigger_id, monitor_type, condition, severity, url, message) = r
         print(monitor_type)
-        print(monitor_type is 'Website Health Monitor')
+        print(monitor_type is 'Website Health Check')
 
 
 def get_requests(url):

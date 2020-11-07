@@ -1,4 +1,5 @@
 import mysql.connector
+import re
 from Trigger import Trigger
 
 
@@ -19,7 +20,10 @@ def read_triggers(url, user, pwd):
     trigger_query = cursor.fetchall()
     for t in trigger_query:
         (owner, name, trigger_id, monitor_type, condition, severity, url, message) = t
-        trigger = Trigger(url, monitor_type, condition, severity)
+        regex = '^(.+) (\\d) - (\\d)$'
+        cond = re.search(regex, condition)
+        trigger_condition = {cond.group(1): str('>=') + cond.group(2), cond.group(1): str('<=') + cond.group(3)}
+        trigger = Trigger(trigger_id, url, monitor_type, trigger_condition, severity)
 
         trigger_list.append(trigger)
 

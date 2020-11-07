@@ -1,17 +1,15 @@
 import threading
-import json
 import ServerIO
-
-from Relation import Relation
-from Trigger import Trigger
-from OutputSource import OutputSource
 from Monitor import Monitor
+import UpdateMonitors
 
 url = ''
 
 api_url = '127.0.0.1'
 api_user = 'root'
 api_pwd = '63MH0UT7DCW30'
+
+defined_monitors = {}
 
 
 # Code below is used to send relation's output to the server
@@ -22,22 +20,36 @@ api_pwd = '63MH0UT7DCW30'
 
 class Orchestrator:
     def __init__(self):
-        self.checkers = []  # collection of threads that will run checker functions
-        self.relations = []  # relations
+        self.triggers = []  # collection of threads that will run checker functions
+        self.monitors = []
 
-        self.testCheckerItem = 0
+    def add_triggers(self):
+        self.triggers = ServerIO.read_triggers(api_url, api_user, api_pwd)
 
     # create and start threads for each each relation with appropriate checker function
+    def initialize_monitors(self):
+        for trigger in self.triggers:
+            if trigger.monitor == 'Website Health Check':
+                monitor = defined_monitors['WebsiteHealthMonitor']
+                monitor_thread = threading.Thread(target=monitor.run())
+                self.monitors.append(monitor_thread)
+
     def start_monitors(self):
-        for relation in self.relations:
-            checker = Monitor(relation)
-            self.checkers.append(threading._start_new_thread(checker.start, ()))
-            
+        for monitor in self.monitors:
+            monitor.start()
+
+    def wait_join(self):
+        for monitors in self.monitors:
+            monitors.join()
+
 
 def __main__():
+    global defined_monitors
     orchestrator = Orchestrator()
-    trigger_list = ServerIO.read_triggers(api_url, api_user, api_pwd)
-    orchestrator.start_checkers()
+    UpdateMonitors.__main__()
+    defined_monitors = UpdateMonitors.monitors
+    orchestrator.start_monitors()
+    orchestrator.wait_join()
 
 
 __main__()

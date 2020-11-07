@@ -11,14 +11,14 @@ class Monitor:
         self._dicParser()
         while True:
             for i in range(len(self.funcList)):
-                print(self.triggerId)
                 if self.funcList[i](self.paraList[i][0], self.paraList[i][1]):
                     self.conditionMet = True
-                    print('NOTIFY')
+                    print(self.triggerId, 'Notify Server', sep=' ')
+
                 else:
-                    print('Satisfy')
-                    break
-            time.sleep(5)
+                    print(self.triggerId, 'Satisfy', sep=' ')
+
+            time.sleep(self.interval)
 
     def __init__(self, trigger):
         self.conditionMet = False
@@ -27,6 +27,10 @@ class Monitor:
             self.triggerId = trigger.trigger_id
             self.src = trigger.src
             self.conditions = trigger.condition
+            if 'interval' not in self.conditions.keys():
+                self.interval = 5
+            else:
+                self.interval = self.conditions['interval']
 
         self.funcList = []
         self.paraList = []

@@ -48,6 +48,7 @@ def __main__():
     orchestrator = Orchestrator()
     UpdateMonitors.__main__()
     defined_monitors = UpdateMonitors.monitors
+    orchestrator.initialize_monitors()
     orchestrator.start_monitors()
     orchestrator.wait_join()
 

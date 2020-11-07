@@ -11,6 +11,7 @@ class Monitor:
         self._dicParser()
         while True:
             for i in range(len(self.funcList)):
+                print(self.triggerId)
                 if self.funcList[i](self.paraList[i][0], self.paraList[i][1]):
                     self.conditionMet = True
                     print('NOTIFY')

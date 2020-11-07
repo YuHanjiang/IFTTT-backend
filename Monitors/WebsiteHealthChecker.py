@@ -1,6 +1,8 @@
 import requests
 from Monitor import Monitor
 
+monitor_var = ['Status Code']
+
 
 class WebsiteHealthChecker(Monitor):
 

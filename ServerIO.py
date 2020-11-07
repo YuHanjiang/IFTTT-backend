@@ -20,16 +20,16 @@ def read_triggers(url, user, pwd):
     trigger_query = cursor.fetchall()
     for t in trigger_query:
         (owner, name, trigger_id, monitor_type, condition, severity, url, message) = t
-        regex = '^(.*) (\d* - \d*)$'
 
         # Sanitize condition data
-        cond = re.search(regex, condition)
+        cond = re.search('^(.*) (\d* - \d*)$', condition)
         trigger_condition = {cond.group(1): cond.group(2)}
 
         # Sanitize url
         url = url.strip('http://')
         url = url.strip('https://')
         url = 'http://' + url
+
         trigger = Trigger(trigger_id, url, monitor_type, trigger_condition, severity)
 
         trigger_list.append(trigger)

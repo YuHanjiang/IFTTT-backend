@@ -27,6 +27,7 @@ def read_triggers(url, user, pwd):
 
         trigger_list.append(trigger)
 
+    print(trigger_list)
     return trigger_list
 
 

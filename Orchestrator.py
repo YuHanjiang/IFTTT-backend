@@ -38,7 +38,6 @@ class Orchestrator:
         for monitor in self.monitors:
             monitor.start()
 
-    def wait_join(self):
         for monitors in self.monitors:
             monitors.join()
 
@@ -50,7 +49,6 @@ def __main__():
     defined_monitors = UpdateMonitors.monitors
     orchestrator.initialize_monitors()
     orchestrator.start_monitors()
-    orchestrator.wait_join()
 
 
 __main__()

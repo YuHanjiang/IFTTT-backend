@@ -45,6 +45,7 @@ class Orchestrator:
 def __main__():
     global defined_monitors
     orchestrator = Orchestrator()
+    orchestrator.add_triggers()
     UpdateMonitors.__main__()
     defined_monitors = UpdateMonitors.monitors
     orchestrator.initialize_monitors()

@@ -34,7 +34,7 @@ def read_triggers(url, user, pwd):
 
         trigger_list.append(trigger)
 
-    print('Loaded Triggers')
+    print('Triggers Loaded')
     return trigger_list
 
 

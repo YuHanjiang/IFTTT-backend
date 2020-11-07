@@ -10,13 +10,20 @@ class Monitor:
     def run(self):
         self._dicParser()
         while True:
+            result = True
             for i in range(len(self.funcList)):
-                if self.funcList[i](self.paraList[i][0], self.paraList[i][1]):
-                    self.conditionMet = True
-                    print(self.triggerId, 'Notify Server', sep=' ')
+                # if self.funcList[i](self.paraList[i][0], self.paraList[i][1]):
+                #     self.conditionMet = True
+                #     print(self.triggerId, 'Notify Server', sep=' ')
+                #
+                # else:
+                #     print(self.triggerId, 'Satisfy', sep=' ')
+                result = result and self.funcList[i](self.paraList[i][0], self.paraList[i][1])
 
-                else:
-                    print(self.triggerId, 'Satisfy', sep=' ')
+            if result:
+                print(self.triggerId, 'Alert', sep=' ')
+            else:
+                print(self.triggerId, 'Passed', sep=' ')
 
             time.sleep(self.interval)
 

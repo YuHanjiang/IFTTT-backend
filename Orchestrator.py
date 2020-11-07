@@ -7,8 +7,8 @@ url = ''
 
 api_url = '127.0.0.1'
 api_user = 'root'
-# api_pwd = ''
-api_pwd = '63MH0UT7DCW30'
+api_pwd = ''
+# api_pwd = '63MH0UT7DCW30'
 
 defined_monitors = {}
 
@@ -44,7 +44,6 @@ def __main__():
     UpdateMonitors.__main__()
     defined_monitors = UpdateMonitors.monitors
     orchestrator.initialize_monitors()
-    print(orchestrator.monitors)
     orchestrator.start_monitors()
 
 

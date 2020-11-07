@@ -1,7 +1,5 @@
 import re
-import requests
 import time
-import ServerIO
 
 
 # abstract Monitor class to be implemented in the backend of IFTTT
@@ -19,7 +17,7 @@ class Monitor:
                 else:
                     print('Satisfy')
                     break
-            time.sleep(60)
+            time.sleep(5)
 
     def __init__(self, trigger):
         self.conditionMet = False
@@ -27,7 +25,6 @@ class Monitor:
         if trigger is not None:
             self.triggerId = trigger.trigger_id
             self.src = trigger.src
-            self.method = trigger.method
             self.conditions = trigger.condition
 
         self.funcList = []
@@ -43,24 +40,41 @@ class Monitor:
             self.funcList.append(funcs[key])
 
         for string in self.conditions.values():
-            reg = re.match("([<>=][<>=])([0-9]*|[0-9]*.[0.9]*)", string)
-            clause = reg.group(1)
-            val = float(reg.group(2))
-
             cmpFun = None
+            val = None
+            reg = re.match("([<>=][<>=])([0-9]*|[0-9]*.[0.9]*)", string)
+            if reg is not None:
+                clause = reg.group(1)
+                val = float(reg.group(2))
 
-            if clause == "==":
-                cmpFun = self.equal_equal
-            elif clause == ">=":
-                cmpFun = self.greater_equal
-            elif clause == "<=":
-                cmpFun = self.lesser_equal
+                if clause is not None and val is not None:
+                    if clause == "==":
+                        cmpFun = self.equal_equal
+                    elif clause == ">=":
+                        cmpFun = self.greater_equal
+                    elif clause == "<=":
+                        cmpFun = self.lesser_equal
+            else:
+                reg = re.match('^(\d+) - (\d+)$', string)
+                if reg is not None:
+                    f = reg.group(1)
+                    l = reg.group(2)
+                    val = (float(f), float(l))
+                    if f is not None and l is not None:
+                        cmpFun = self.between
 
             if cmpFun:
                 self.paraList.append((cmpFun, val))
 
     # Start the Monitor and check what is the method of checking
     # The method returns true if the check satisfies the user's defined condition
+    @staticmethod
+    def between(a, b):
+        (f, l) = b
+        if f <= a <= l:
+            return True
+        else:
+            return False
 
     @staticmethod
     def equal_equal(a, b):
@@ -83,6 +97,4 @@ class Monitor:
         else:
             return False
 
-
 # PUBLIC FUNCTIONS
-

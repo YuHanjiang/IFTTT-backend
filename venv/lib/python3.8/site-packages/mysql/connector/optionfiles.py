@@ -1,25 +1,30 @@
-# MySQL Connector/Python - MySQL driver written in Python.
-# Copyright (c) 2014, Oracle and/or its affiliates. All rights reserved.
-
-# MySQL Connector/Python is licensed under the terms of the GPLv2
-# <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html>, like most
-# MySQL Connectors. There are special exceptions to the terms and
-# conditions of the GPLv2 as it is applied to this software, see the
-# FOSS License Exception
-# <http://www.mysql.com/about/legal/licensing/foss-exception.html>.
+# Copyright (c) 2014, 2018, Oracle and/or its affiliates. All rights reserved.
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation.
+# it under the terms of the GNU General Public License, version 2.0, as
+# published by the Free Software Foundation.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# This program is also distributed with certain software (including
+# but not limited to OpenSSL) that is licensed under separate terms,
+# as designated in a particular file or component or in included license
+# documentation.  The authors of MySQL hereby grant you an
+# additional permission to link the program and your derivative works
+# with the separately licensed software that they have included with
+# MySQL.
+#
+# Without limiting anything contained in the foregoing, this file,
+# which is part of MySQL Connector/Python, is also subject to the
+# Universal FOSS Exception, version 1.0, a copy of which can be found at
+# http://oss.oracle.com/licenses/universal-foss-exception.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License, version 2.0, for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+# along with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin St, Fifth Floor, Boston, MA 02110-1301  USA
 
 """Implements parser to parse MySQL option files.
 """
@@ -30,7 +35,7 @@ import os
 import re
 
 from .catch23 import PY2
-from .constants import DEFAULT_CONFIGURATION, CNX_POOL_ARGS, CNX_FABRIC_ARGS
+from .constants import DEFAULT_CONFIGURATION, CNX_POOL_ARGS
 
 # pylint: disable=F0401
 if PY2:
@@ -71,7 +76,6 @@ def read_option_files(**config):
         config_from_file = option_parser.get_groups_as_dict_with_priority(
             *groups)
         config_options = {}
-        fabric_options = {}
         for group in groups:
             try:
                 for option, value in config_from_file[group].items():
@@ -79,14 +83,8 @@ def read_option_files(**config):
                         if option == 'socket':
                             option = 'unix_socket'
 
-                        if option in CNX_FABRIC_ARGS:
-                            if (option not in fabric_options or
-                                    fabric_options[option][1] <= value[1]):
-                                fabric_options[option] = value
-                            continue
-
                         if (option not in CNX_POOL_ARGS and
-                                option not in ['fabric', 'failover']):
+                                option != 'failover'):
                             # pylint: disable=W0104
                             DEFAULT_CONFIGURATION[option]
                             # pylint: enable=W0104
@@ -95,7 +93,7 @@ def read_option_files(**config):
                                 config_options[option][1] <= value[1]):
                             config_options[option] = value
                     except KeyError:
-                        if group is 'connector_python':
+                        if group == 'connector_python':
                             raise AttributeError("Unsupported argument "
                                                  "'{0}'".format(option))
             except KeyError:
@@ -112,15 +110,6 @@ def read_option_files(**config):
                 except (NameError, SyntaxError):
                     config[option] = value[0]
 
-        if fabric_options:
-            config['fabric'] = {}
-            for option, value in fabric_options.items():
-                try:
-                     # pylint: disable=W0123
-                    config['fabric'][option.split('_', 1)[1]] = eval(value[0])
-                     # pylint: enable=W0123
-                except (NameError, SyntaxError):
-                    config['fabric'][option.split('_', 1)[1]] = value[0]
     return config
 
 
@@ -282,23 +271,23 @@ class MySQLOptionsParser(SafeConfigParser):  # pylint: disable=R0901
 
         Returns a dictionary
         """
-        if len(args) == 0:
+        if not args:
             args = self._options_dict.keys()
 
         options = {}
+        priority = {}
         for group in args:
             try:
-                for option, value in self._options_dict[group].items():
-                    if option not in options or options[option][1] <= value[1]:
-                        options[option] = value
+                for option, value in [(key, value,) for key, value in
+                                      self._options_dict[group].items() if
+                                      key != "__name__" and
+                                      not key.startswith("!")]:
+                    if option not in options or priority[option] <= value[1]:
+                        priority[option] = value[1]
+                        options[option] = value[0]
             except KeyError:
                 pass
 
-        for key in options.keys():
-            if key == '__name__' or key.startswith('!'):
-                del options[key]
-            else:
-                options[key] = options[key][0]
         return options
 
     def get_groups_as_dict_with_priority(self, *args): # pylint: disable=C0103
@@ -315,20 +304,19 @@ class MySQLOptionsParser(SafeConfigParser):  # pylint: disable=R0901
 
         Returns an dictionary of dictionaries
         """
-        if len(args) == 0:
+        if not args:
             args = self._options_dict.keys()
 
         options = dict()
         for group in args:
             try:
-                options[group] = dict(self._options_dict[group])
+                options[group] = dict((key, value,) for key, value in
+                                      self._options_dict[group].items() if
+                                      key != "__name__" and
+                                      not key.startswith("!"))
             except KeyError:
                 pass
 
-        for group in options.keys():
-            for key in options[group].keys():
-                if key == '__name__' or key.startswith('!'):
-                    del options[group][key]
         return options
 
     def get_groups_as_dict(self, *args):
@@ -341,20 +329,17 @@ class MySQLOptionsParser(SafeConfigParser):  # pylint: disable=R0901
 
         Returns an dictionary of dictionaries
         """
-        if len(args) == 0:
+        if not args:
             args = self._options_dict.keys()
 
         options = dict()
         for group in args:
             try:
-                options[group] = dict(self._options_dict[group])
+                options[group] = dict((key, value[0],) for key, value in
+                                      self._options_dict[group].items() if
+                                      key != "__name__" and
+                                      not key.startswith("!"))
             except KeyError:
                 pass
 
-        for group in options.keys():
-            for key in options[group].keys():
-                if key == '__name__' or key.startswith('!'):
-                    del options[group][key]
-                else:
-                    options[group][key] = options[group][key][0]
         return options

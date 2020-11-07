@@ -7,15 +7,10 @@ url = ''
 
 api_url = '127.0.0.1'
 api_user = 'root'
-api_pwd = '63MH0UT7DCW30'
+api_pwd = ''
+# api_pwd = '63MH0UT7DCW30'
 
 defined_monitors = {}
-
-
-# Code below is used to send relation's output to the server
-# @todo
-# output_json = relation.outputSource.make_json()
-# ServerIO.send_server_request(url, output_json)
 
 
 class Orchestrator:
@@ -30,8 +25,8 @@ class Orchestrator:
     def initialize_monitors(self):
         for trigger in self.triggers:
             if trigger.monitor == 'Website Health Check':
-                monitor = defined_monitors['WebsiteHealthMonitor']
-                monitor_thread = threading.Thread(target=monitor.run())
+                monitor = defined_monitors['WebsiteHealthChecker']
+                monitor_thread = threading.Thread(target=monitor.run(trigger))
                 self.monitors.append(monitor_thread)
 
     def start_monitors(self):

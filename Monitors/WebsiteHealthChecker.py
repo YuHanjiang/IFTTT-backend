@@ -11,7 +11,14 @@ class WebsiteHealthChecker(Monitor):
     def _HTTPRESP_check(self, func, val):
         try:
             r = requests.get(self.src)
+
         except requests.exceptions.RequestException as err:
+            print(err)
             return True
 
-        return func(r.status_code, val)
+        return func(float(r.status_code), val)
+
+
+def run(trigger):
+    monitor = WebsiteHealthChecker(trigger)
+    monitor.run()

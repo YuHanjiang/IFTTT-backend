@@ -28,8 +28,9 @@ def read_triggers(url, user, pwd):
             test_method = cond.group(1)
             test_values = cond.group(2)
             if test_method == 'Latency':
-                trigger_condition[test_method] = ['>=' + test_values[0]]
+                trigger_condition[test_method] = ['>=' + test_values]
             elif test_method == 'Status code':
+                test_values = test_values.split(', ')
                 trigger_condition[test_method] = ['==' + t for t in test_values]
 
             url = sanitize_url(url)

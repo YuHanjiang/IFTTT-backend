@@ -19,6 +19,7 @@ class Monitor:
                 # else:
                 #     print(self.triggerId, 'Satisfy', sep=' ')
                 result = result or self.funcList[i](self.paraList[i][0], self.paraList[i][1])
+                print(self.funcList[i](self.paraList[i][0], self.paraList[i][1]))
 
             if result:
                 print(self.triggerId, 'Alert', sep=' ')
@@ -57,7 +58,7 @@ class Monitor:
             for value in value_lists:
                 cmpFun = None
                 val = None
-                reg = re.match(r'([<>=][<>=])([0-9]*|[0-9]*.[0.9]*)', value)
+                reg = re.match(r'([<>=][<>=])([0-9]+)', value)
                 if reg is not None:
                     clause = reg.group(1)
                     val = float(reg.group(2))

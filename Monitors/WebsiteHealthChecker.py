@@ -15,12 +15,11 @@ class WebsiteHealthChecker(Monitor):
     def _HTTPRESP_check(self, func, val):
         try:
             r = requests.get(self.src)
-            print(r.status_code)
         except requests.exceptions.RequestException as err:
             print(err)
             return True
 
-        return func(float(r.status_code), val)
+        return func(int(r.status_code), val)
 
     def _ping_check(self, func, val):
         r = pythonping.ping(self.src, size=50)

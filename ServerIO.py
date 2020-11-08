@@ -41,7 +41,7 @@ def read_triggers(url, user, pwd):
             trigger_list.append(trigger)
 
     print('Triggers Loaded')
-    time.sleep(10)
+    # time.sleep(10)
     return trigger_list
 
 
@@ -49,7 +49,7 @@ def read_triggers(url, user, pwd):
 def sanitize_url(url):
     url = url.strip('http://')
     url = url.strip('https://')
-    return 'http://' + url
+    return url
 
 
 def notify_api(url, user, pwd):

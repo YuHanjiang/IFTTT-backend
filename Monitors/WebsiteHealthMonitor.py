@@ -14,7 +14,7 @@ class WebsiteHealthChecker(Monitor):
 
     def _HTTPRESP_check(self, func, val):
         try:
-            r = requests.get(self.src)
+            r = requests.get('http://' + self.src)
 
         except requests.exceptions.RequestException as err:
             print('Access Denied')

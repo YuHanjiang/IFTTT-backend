@@ -18,7 +18,7 @@ class Monitor:
                 #
                 # else:
                 #     print(self.triggerId, 'Satisfy', sep=' ')
-                result = result and self.funcList[i](self.paraList[i][0], self.paraList[i][1])
+                result = result or self.funcList[i](self.paraList[i][0], self.paraList[i][1])
 
             if result:
                 print(self.triggerId, 'Alert', sep=' ')
@@ -53,6 +53,7 @@ class Monitor:
             self.funcList.append(funcs[key])
 
         for value_lists in self.conditions.values():
+            print(value_lists)
             for value in value_lists:
                 cmpFun = None
                 val = None

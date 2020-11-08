@@ -34,6 +34,7 @@ class Monitor:
             self.triggerId = trigger.trigger_id
             self.src = trigger.src
             self.conditions = trigger.condition
+            self.trigger_owner = trigger.owner
             if 'interval' not in self.conditions.keys():
                 self.interval = 5
             else:
@@ -43,7 +44,7 @@ class Monitor:
         self.paraList = []
 
     def _mapper(self):
-        pass
+        return []
 
     def _dicParser(self):
         funcs = self._mapper()
@@ -51,32 +52,60 @@ class Monitor:
         for key in self.conditions.keys():
             self.funcList.append(funcs[key])
 
-        for string in self.conditions.values():
-            cmpFun = None
-            val = None
-            reg = re.match("([<>=][<>=])([0-9]*|[0-9]*.[0.9]*)", string)
-            if reg is not None:
-                clause = reg.group(1)
-                val = float(reg.group(2))
-
-                if clause is not None and val is not None:
-                    if clause == "==":
-                        cmpFun = self.equal_equal
-                    elif clause == ">=":
-                        cmpFun = self.greater_equal
-                    elif clause == "<=":
-                        cmpFun = self.lesser_equal
-            else:
-                reg = re.match('^(\d+) - (\d+)$', string)
+        for value_lists in self.conditions.values():
+            for value in value_lists:
+                cmpFun = None
+                val = None
+                reg = re.match(r'([<>=][<>=])([0-9]*|[0-9]*.[0.9]*)', value)
                 if reg is not None:
-                    f = reg.group(1)
-                    l = reg.group(2)
-                    val = (float(f), float(l))
-                    if f is not None and l is not None:
-                        cmpFun = self.between
+                    clause = reg.group(1)
+                    val = float(reg.group(2))
 
-            if cmpFun:
-                self.paraList.append((cmpFun, val))
+                    if clause is not None and val is not None:
+                        if clause == "==":
+                            cmpFun = self.equal_equal
+                        elif clause == ">=":
+                            cmpFun = self.greater_equal
+                        elif clause == "<=":
+                            cmpFun = self.lesser_equal
+                else:
+                    reg = re.match(r'^(\d+) - (\d+)$', value)
+                    if reg is not None:
+                        f = reg.group(1)
+                        last = reg.group(2)
+                        val = (float(f), float(last))
+                        if f is not None and last is not None:
+                            cmpFun = self.between
+
+                if cmpFun:
+                    self.paraList.append((cmpFun, val))
+
+        # for string in self.conditions.values():
+        #     cmpFun = None
+        #     val = None
+        #     reg = re.match(r'([<>=][<>=])([0-9]*|[0-9]*.[0.9]*)', string)
+        #     if reg is not None:
+        #         clause = reg.group(1)
+        #         val = float(reg.group(2))
+        #
+        #         if clause is not None and val is not None:
+        #             if clause == "==":
+        #                 cmpFun = self.equal_equal
+        #             elif clause == ">=":
+        #                 cmpFun = self.greater_equal
+        #             elif clause == "<=":
+        #                 cmpFun = self.lesser_equal
+        #     else:
+        #         reg = re.match(r'^(\d+) - (\d+)$', string)
+        #         if reg is not None:
+        #             f = reg.group(1)
+        #             last = reg.group(2)
+        #             val = (float(f), float(last))
+        #             if f is not None and last is not None:
+        #                 cmpFun = self.between
+        #
+        #     if cmpFun:
+        #         self.paraList.append((cmpFun, val))
 
     # Start the Monitor and check what is the method of checking
     # The method returns true if the check satisfies the user's defined condition

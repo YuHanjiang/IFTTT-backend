@@ -8,7 +8,7 @@ monitor_var = ['Status Code', 'Latency']
 class WebsiteHealthChecker(Monitor):
 
     def _mapper(self):
-        varToFuncMapping = {'Status Code': self._HTTPRESP_check, 'Latency': self._ping_check}
+        varToFuncMapping = {'Status code': self._HTTPRESP_check, 'Latency': self._ping_check}
 
         return varToFuncMapping
 

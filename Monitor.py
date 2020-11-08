@@ -36,10 +36,10 @@ class Monitor:
             self.src = trigger.src
             self.conditions = trigger.condition
             self.trigger_owner = trigger.owner
-            if 'interval' not in self.conditions.keys():
+            if 'Interval' not in self.conditions.keys():
                 self.interval = 5
             else:
-                self.interval = self.conditions['interval']
+                self.interval = self.conditions['Interval']
 
         self.funcList = []
         self.paraList = []

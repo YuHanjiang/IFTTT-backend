@@ -22,6 +22,7 @@ class Monitor:
 
             if result:
                 print(self.triggerId, 'Alert', sep=' ')
+                break
             else:
                 print(self.triggerId, 'Passed', sep=' ')
 
@@ -53,7 +54,6 @@ class Monitor:
             self.funcList.append(funcs[key])
 
         for value_lists in self.conditions.values():
-            print(value_lists)
             for value in value_lists:
                 cmpFun = None
                 val = None

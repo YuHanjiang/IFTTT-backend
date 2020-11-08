@@ -10,7 +10,7 @@ class Monitor:
     def run(self):
         self._dicParser()
         while True:
-            result = True
+            result = False
             for i in range(len(self.funcList)):
                 # if self.funcList[i](self.paraList[i][0], self.paraList[i][1]):
                 #     self.conditionMet = True
@@ -19,8 +19,6 @@ class Monitor:
                 # else:
                 #     print(self.triggerId, 'Satisfy', sep=' ')
                 result = result or self.funcList[i](self.paraList[i][0], self.paraList[i][1])
-                print(self.funcList[i](self.paraList[i][0], self.paraList[i][1]))
-
             if result:
                 print(self.triggerId, 'Alert', sep=' ')
                 break

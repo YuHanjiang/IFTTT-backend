@@ -25,8 +25,8 @@ class Orchestrator:
     def initialize_monitors(self):
         for trigger in self.triggers:
             if trigger.monitor == 'Website Health Check':
-                monitor = defined_monitors['WebsiteHealthChecker']
-                monitor_thread = threading.Thread(target=monitor.run, args=(trigger,))
+                monitor = defined_monitors['WebsiteHealthMonitor']
+                monitor_thread = threading.Thread(target=monitor.start, args=(trigger,))
                 self.monitors.append(monitor_thread)
 
     def start_monitors(self):

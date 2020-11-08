@@ -1,5 +1,6 @@
 import mysql.connector
 import re
+import time
 from Trigger import Trigger
 
 
@@ -40,6 +41,7 @@ def read_triggers(url, user, pwd):
             trigger_list.append(trigger)
 
     print('Triggers Loaded')
+    time.sleep(10)
     return trigger_list
 
 

@@ -1,5 +1,7 @@
 import re
-import time
+import time  
+import mysql.connector
+
 
 
 # abstract Monitor class to be implemented in the backend of IFTTT
@@ -21,7 +23,11 @@ class Monitor:
                 result = result and self.funcList[i](self.paraList[i][0], self.paraList[i][1])
 
             if result:
-                print(self.triggerId, 'Alert', sep=' ')
+                print(self.triggerId, 'Alert', sep=' ') 
+                query = "INSERT INTO pendingNotifications (trigger_id) \n" + "Values (" + str(self.triggerId) + ")"  
+
+                self.cursor.execute(query) 
+                print("added to pending table")
             else:
                 print(self.triggerId, 'Passed', sep=' ')
 
@@ -40,7 +46,17 @@ class Monitor:
                 self.interval = self.conditions['interval']
 
         self.funcList = []
-        self.paraList = []
+        self.paraList = [] 
+
+        db = mysql.connector.connect(
+            host="127.0.0.1",
+            user="root",
+            password="63MH0UT7DCW30",
+            database="ifttt"
+        )  
+
+        self.cursor = db.cursor()
+
 
     def _mapper(self):
         pass

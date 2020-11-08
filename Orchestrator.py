@@ -21,8 +21,9 @@ class Orchestrator:
     def add_triggers(self):
         self.triggers = ServerIO.read_triggers(api_url, api_user, api_pwd)
 
-    # create and start threads for each each relation with appropriate checker function
-    def initialize_monitors(self):
+    # create and start threads for each each relation with appropriate checker function 
+    def initialize_monitors(self): 
+        #will later fix so new monitorers don't have to be hard coded in 
         for trigger in self.triggers:
             if trigger.monitor == 'Website Health Check':
                 monitor = defined_monitors['WebsiteHealthChecker']

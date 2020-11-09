@@ -52,5 +52,17 @@ def sanitize_url(url):
     return url
 
 
-def notify_api(url, user, pwd):
-    pass
+def pushNoti(url, user, pwd, triggerId, owner): 
+    db = mysql.connector.connect(
+        host=url,
+        user=user,
+        password=pwd,
+        database="ifttt"
+    )
+
+    cursor = db.cursor()
+
+    query = "INSERT INTO pendingNotifications (trigger_id) Values (" + str(triggerId) + ")"  
+    cursor.execute(query)  
+    db.commit()
+    print("added to pending table")

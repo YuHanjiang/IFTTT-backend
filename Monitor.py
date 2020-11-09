@@ -1,6 +1,12 @@
 import re
-import time
+import time  
+import mysql.connector 
+import ServerIO
 
+api_url = '127.0.0.1'
+api_user = 'root'
+# api_pwd = ''
+api_pwd = '63MH0UT7DCW30'
 
 # abstract Monitor class to be implemented in the backend of IFTTT
 class Monitor:
@@ -20,7 +26,8 @@ class Monitor:
                 #     print(self.triggerId, 'Satisfy', sep=' ')
                 result = result or self.funcList[i](self.paraList[i][0], self.paraList[i][1])
             if result:
-                print(self.triggerId, 'Alert', sep=' ')
+                print(self.triggerId, 'Alert', sep=' ') 
+                ServerIO.pushNoti(api_url,api_user,api_pwd,self.triggerId,self.trigger_owner)
                 break
             else:
                 print(self.triggerId, 'Passed', sep=' ')
@@ -41,7 +48,7 @@ class Monitor:
                 self.interval = self.conditions['Interval']
 
         self.funcList = []
-        self.paraList = []
+        self.paraList = [] 
 
     def _mapper(self):
         return []

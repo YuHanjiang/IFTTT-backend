@@ -1,6 +1,5 @@
 import threading
 import ServerIO
-from Monitor import Monitor
 import UpdateMonitors
 
 url = ''

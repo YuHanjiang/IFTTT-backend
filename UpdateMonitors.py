@@ -11,7 +11,7 @@ def read_filenames():
 
 
 def import_monitors():
-    regex = '^Monitors/(.*).py$'
+    regex = '^Monitors[/|\\\\](.*).py$'
     for name in read_filenames():
         module_search = re.search(regex, name)
         if module_search is not None:

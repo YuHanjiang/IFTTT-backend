@@ -1,8 +1,12 @@
 import re
 import time  
-import mysql.connector
+import mysql.connector 
+import ServerIO
 
-
+api_url = '127.0.0.1'
+api_user = 'root'
+# api_pwd = ''
+api_pwd = '63MH0UT7DCW30'
 
 # abstract Monitor class to be implemented in the backend of IFTTT
 class Monitor:
@@ -23,11 +27,7 @@ class Monitor:
                 result = result or self.funcList[i](self.paraList[i][0], self.paraList[i][1])
             if result:
                 print(self.triggerId, 'Alert', sep=' ') 
-                query = "INSERT INTO pendingNotifications (trigger_id) \n" + "Values (" + str(self.triggerId) + ")"  
-
-                self.cursor.execute(query) 
-                print("added to pending table")
-                print(self.triggerId, 'Alert', sep=' ')
+                ServerIO.pushNoti(api_url,api_user,api_pwd,self.triggerId,self.trigger_owner)
                 break
             else:
                 print(self.triggerId, 'Passed', sep=' ')
@@ -49,16 +49,6 @@ class Monitor:
 
         self.funcList = []
         self.paraList = [] 
-
-        db = mysql.connector.connect(
-            host="127.0.0.1",
-            user="root",
-            password="63MH0UT7DCW30",
-            database="ifttt"
-        )  
-
-        self.cursor = db.cursor()
-
 
     def _mapper(self):
         return []

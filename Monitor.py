@@ -22,16 +22,13 @@ class Monitor:
                 #     print(self.triggerId, 'Satisfy', sep=' ')
                 result = result or self.funcList[i](self.paraList[i][0], self.paraList[i][1])
             if result:
-<<<<<<< HEAD
                 print(self.triggerId, 'Alert', sep=' ') 
                 query = "INSERT INTO pendingNotifications (trigger_id) \n" + "Values (" + str(self.triggerId) + ")"  
 
                 self.cursor.execute(query) 
                 print("added to pending table")
-=======
                 print(self.triggerId, 'Alert', sep=' ')
                 break
->>>>>>> d9aa2a61808ef0e28c84f4a31ae852dd04e8e5a9
             else:
                 print(self.triggerId, 'Passed', sep=' ')
 

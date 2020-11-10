@@ -1,6 +1,5 @@
 import mysql.connector
 import re
-import time
 from Trigger import Trigger
 
 
@@ -36,7 +35,7 @@ def read_triggers(url, user, pwd):
 
             url = sanitize_url(url)
 
-            trigger = Trigger(trigger_id, url, monitor_type, trigger_condition, severity, owner)
+            trigger = Trigger(trigger_id, url, monitor_type, trigger_condition, severity, owner, cond)
 
             trigger_list.append(trigger)
 
@@ -52,7 +51,7 @@ def sanitize_url(url):
     return url
 
 
-def pushNoti(url, user, pwd, triggerId, owner, trigger):
+def pushNotification(url, user, pwd, triggerId, owner, trigger):
     db = mysql.connector.connect(
         host=url,
         user=user,
@@ -66,6 +65,6 @@ def pushNoti(url, user, pwd, triggerId, owner, trigger):
     #         str(trigger.condition) + "," + str(owner) + ") ON DUPLICATE KEY UPDATE "
 
     cursor.execute("INSERT INTO pending_notifications VALUES (%s, %s, %s)",
-                   (str(triggerId), str(trigger.condition), str(owner)))
+                   (str(triggerId), str(trigger.condition_string), str(owner)))
     db.commit()
     print("added to pending table")

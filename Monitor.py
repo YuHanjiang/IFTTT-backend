@@ -1,6 +1,5 @@
 import re
 import time
-import mysql.connector
 import ServerIO
 
 api_url = '127.0.0.1'
@@ -28,7 +27,7 @@ class Monitor:
                 result = result or self.funcList[i](self.paraList[i][0], self.paraList[i][1])
             if result:
                 print(self.triggerId, 'Alert', sep=' ')
-                ServerIO.pushNoti(api_url, api_user, api_pwd, self.triggerId, self.trigger_owner, self.trigger)
+                ServerIO.pushNotification(api_url, api_user, api_pwd, self.triggerId, self.trigger_owner, self.trigger)
                 break
             else:
                 print(self.triggerId, 'Passed', sep=' ')

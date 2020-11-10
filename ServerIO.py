@@ -66,6 +66,6 @@ def pushNoti(url, user, pwd, triggerId, owner, trigger):
     #         str(trigger.condition) + "," + str(owner) + ") ON DUPLICATE KEY UPDATE "
 
     cursor.execute("INSERT INTO pending_notifications VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE conditionMet = %s",
-                   (triggerId, trigger.condition, owner, trigger.condition))
+                   (str(triggerId), str(trigger.condition), str(owner), str(trigger.condition)))
     db.commit()
     print("added to pending table")

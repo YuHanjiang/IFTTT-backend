@@ -52,7 +52,7 @@ def sanitize_url(url):
     return url
 
 
-def pushNoti(url, user, pwd, triggerId, owner): 
+def pushNoti(url, user, pwd, triggerId, owner, trigger):
     db = mysql.connector.connect(
         host=url,
         user=user,
@@ -62,7 +62,10 @@ def pushNoti(url, user, pwd, triggerId, owner):
 
     cursor = db.cursor()
 
-    query = "INSERT INTO pendingNotifications (trigger_id) Values (" + str(triggerId) + ")"
-    cursor.execute(query)  
+    # query = "INSERT IGNORE INTO pending_notifications (trigger_id) Values (" + str(triggerId) + "," + \
+    #         str(trigger.condition) + "," + str(owner) + ") ON DUPLICATE KEY UPDATE "
+
+    cursor.execute("INSERT INTO pending_notifications VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE conditionMet = %s",
+                   (triggerId, trigger.condition, owner, trigger.condition))
     db.commit()
     print("added to pending table")

@@ -35,7 +35,7 @@ def read_triggers(url, user, pwd):
 
             url = sanitize_url(url)
 
-            trigger = Trigger(trigger_id, url, monitor_type, trigger_condition, severity, owner, cond)
+            trigger = Trigger(trigger_id, url, monitor_type, trigger_condition, severity, owner, condition)
 
             trigger_list.append(trigger)
 

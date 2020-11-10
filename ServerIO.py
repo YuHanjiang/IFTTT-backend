@@ -62,7 +62,7 @@ def pushNoti(url, user, pwd, triggerId, owner):
 
     cursor = db.cursor()
 
-    query = "INSERT INTO pendingNotifications (trigger_id) Values (" + str(triggerId) + ") ON DUPLICATE KEY UPDATE"
+    query = "INSERT INTO pendingNotifications (trigger_id) Values (" + str(triggerId) + ")"
     cursor.execute(query)  
     db.commit()
     print("added to pending table")

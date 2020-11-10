@@ -12,11 +12,12 @@ def mysql_request():
         database="ifttt",
         auth_plugin='mysql_native_password'
     )
+
     print(mydb)
 
     cursor = mydb.cursor()
-
-    cursor.execute("Select * from triggers")
+    t_id = 3
+    cursor.execute("Select * from triggers where trigger_id = %s", t_id)
 
     result = cursor.fetchall()
     for r in result:

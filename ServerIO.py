@@ -3,7 +3,7 @@ import re
 from Trigger import Trigger
 
 
-def read_triggers(url, user, pwd):
+def read_triggers(url, user, pwd, triggerIds):
     trigger_list = []
 
     db = mysql.connector.connect(
@@ -22,22 +22,26 @@ def read_triggers(url, user, pwd):
         (name, monitor_type, severity, url, message, trigger_id, condition, owner) = t
         trigger_condition = {}
 
-        # Parse condition data
-        cond = re.search(r'^(.*): (.*)$', condition)
-        if cond is not None:
-            test_method = cond.group(1)
-            test_values = cond.group(2)
-            if test_method == 'Latency':
-                trigger_condition[test_method] = ['>=' + test_values]
-            elif test_method == 'Status code':
-                test_values = test_values.split(', ')
-                trigger_condition[test_method] = ['==' + t for t in test_values]
+        #dont add triggers that are already in the system 
+        if trigger_id not in triggerIds: 
+          
 
-            url = sanitize_url(url)
+            # Parse condition data
+            cond = re.search(r'^(.*): (.*)$', condition)
+            if cond is not None:
+                test_method = cond.group(1)
+                test_values = cond.group(2)
+                if test_method == 'Latency':
+                    trigger_condition[test_method] = ['>=' + test_values]
+                elif test_method == 'Status code':
+                    test_values = test_values.split(', ')
+                    trigger_condition[test_method] = ['==' + t for t in test_values]
 
-            trigger = Trigger(trigger_id, url, monitor_type, trigger_condition, severity, owner, condition)
+                url = sanitize_url(url)
 
-            trigger_list.append(trigger)
+                trigger = Trigger(trigger_id, url, monitor_type, trigger_condition, severity, owner, condition)
+
+                trigger_list.append(trigger)
 
     print('Triggers Loaded')
     # time.sleep(10)

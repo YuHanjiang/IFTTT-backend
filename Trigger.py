@@ -7,4 +7,5 @@ class Trigger:
         self.severity = severity
         self.monitor = monitor
         self.owner = owner
-        self.condition_string = condition_string
+        self.condition_string = condition_string 
+        self.hasMonitor = False

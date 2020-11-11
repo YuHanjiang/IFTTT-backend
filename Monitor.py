@@ -28,17 +28,17 @@ class Monitor:
             if result:
                 print(self.triggerId, 'Alert', sep=' ')
                 ServerIO.pushNotification(api_url, api_user, api_pwd, self.triggerId, self.trigger_owner, self.trigger)
-                break
+                time.sleep(self.refresh_time)
             else:
                 print(self.triggerId, 'Passed', sep=' ')
-
-            time.sleep(self.interval)
+                time.sleep(self.interval)
 
     def __init__(self, trigger):
         self.conditionMet = False
 
         if trigger is not None:
             self.trigger = trigger
+            self.refresh_time = 60
             self.triggerId = trigger.trigger_id
             self.src = trigger.src
             self.conditions = trigger.condition

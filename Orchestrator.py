@@ -1,14 +1,8 @@
 import threading
-import ServerIO
-from Monitor import Monitor
+from ServerIO import ServerIO
 import UpdateMonitors
-
-url = ''
-
-api_url = '127.0.0.1'
-api_user = 'root'
-# api_pwd = ''
-api_pwd = '63MH0UT7DCW30'
+import time
+import json
 
 defined_monitors = {}
 
@@ -16,35 +10,54 @@ defined_monitors = {}
 class Orchestrator:
     def __init__(self):
         self.triggers = []  # collection of threads that will run checker functions
-        self.monitors = []
+        self.monitors = {}
+        self.triggerIds = set([])
+        self.serverIO = ServerIO()
+        with open("Monitors.json") as file:
+            self.monitorDic = json.load(file)
 
-    def add_triggers(self):
-        self.triggers = ServerIO.read_triggers(api_url, api_user, api_pwd)
+    def update_triggers(self):
+        # add new triggers to current triggers in the system
+        (newTriggers, remove_triggers) = self.serverIO.read_triggers(self.triggerIds)
+        self.triggers.extend(newTriggers)
+        for trigger in self.triggers:
+            self.triggerIds.add(trigger.trigger_id)
+        to_remove = []
+        for trigger in self.triggers:
+            if trigger.trigger_id in remove_triggers:
+                trigger.terminated = True
+                to_remove.append(trigger)
+
+        for t in to_remove:
+            self.triggers.remove(t)
+
+        for rm_t in remove_triggers:
+            self.monitors[rm_t] = None
 
     # create and start threads for each each relation with appropriate checker function
     def initialize_monitors(self):
         for trigger in self.triggers:
-            if trigger.monitor == 'Website Health Check':
-                monitor = defined_monitors['WebsiteHealthChecker']
-                monitor_thread = threading.Thread(target=monitor.run, args=(trigger,))
-                self.monitors.append(monitor_thread)
+            if not trigger.hasMonitor:
+                trigger.hasMonitor = True
+                monitor = defined_monitors[self.monitorDic[trigger.monitor]]
+                monitor_thread = threading.Thread(target=monitor.start, args=(trigger,))
+                monitor_thread.start()
+                self.monitors[trigger.trigger_id] = monitor_thread
 
-    def start_monitors(self):
-        for monitor in self.monitors:
-            monitor.start()
-
-        for monitors in self.monitors:
-            monitors.join()
+    def update(self):
+        while True:
+            self.update_triggers()
+            self.initialize_monitors()
+            time.sleep(10)
 
 
 def __main__():
     global defined_monitors
     orchestrator = Orchestrator()
-    orchestrator.add_triggers()
-    UpdateMonitors.__main__()
+    UpdateMonitors.update_monitors()
     defined_monitors = UpdateMonitors.monitors
     orchestrator.initialize_monitors()
-    orchestrator.start_monitors()
+    orchestrator.update()
 
 
 __main__()

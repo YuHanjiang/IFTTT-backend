@@ -1,8 +1,18 @@
 import threading
+import ServerIO
 import UpdateMonitors
 import time
 <<<<<<< HEAD
 import json
+=======
+
+url = ''
+
+api_url = '127.0.0.1'
+api_user = 'root'
+# api_pwd = ''
+api_pwd = '63MH0UT7DCW30'
+>>>>>>> parent of 0fe96a6... database config
 
 defined_monitors = {}
 
@@ -21,6 +31,7 @@ class Orchestrator:
 
     def update_triggers(self):
         # add new triggers to current triggers in the system
+        (newTriggers, remove_triggers) = ServerIO.read_triggers(api_url, api_user, api_pwd, self.triggerIds)
         self.triggers.extend(newTriggers)
         for trigger in self.triggers:
             self.triggerIds.add(trigger.trigger_id)

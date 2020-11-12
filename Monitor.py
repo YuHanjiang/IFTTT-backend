@@ -1,6 +1,13 @@
 import re
 import time
+import ServerIO
 
+<<<<<<< HEAD
+=======
+api_url = '127.0.0.1'
+api_user = 'root'
+# api_pwd = ''
+api_pwd = '63MH0UT7DCW30'
 
 
 >>>>>>> parent of 0fe96a6... database config

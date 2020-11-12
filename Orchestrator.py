@@ -1,7 +1,8 @@
 import threading
 from ServerIO import ServerIO
 import UpdateMonitors
-import time
+import time 
+import json
 
 
 defined_monitors = {}
@@ -12,7 +13,9 @@ class Orchestrator:
         self.triggers = []  # collection of threads that will run checker functions
         self.monitors = {}
         self.triggerIds = set([]) 
-        self.serverIO = ServerIO()
+        self.serverIO = ServerIO() 
+        with open("Monitors.json") as file: 
+            self.monitorDic = json.load(file)
 
     def update_triggers(self):
         # add new triggers to current triggers in the system
@@ -34,21 +37,22 @@ class Orchestrator:
 
     # create and start threads for each each relation with appropriate checker function
     def initialize_monitors(self):
-        # will later fix so new monitors don't have to be hard coded in
         for trigger in self.triggers:
             if not trigger.hasMonitor:
                 trigger.hasMonitor = True
-                if trigger.monitor == 'Website Health Check':
-                    monitor = defined_monitors['WebsiteHealthMonitor']
-                    monitor_thread = threading.Thread(target=monitor.start, args=(trigger,))
-                    monitor_thread.start()
-                    self.monitors[trigger.trigger_id] = monitor_thread
+                monitor = defined_monitors[self.monitorDic[trigger.monitor]] 
+                monitor_thread = threading.Thread(target=monitor.start, args=(trigger,))
+                monitor_thread.start()
+                self.monitors[trigger.trigger_id] = monitor_thread
 
     def update(self):
         while True:
             self.update_triggers()
             self.initialize_monitors()
-            time.sleep(10)
+            time.sleep(10) 
+
+   
+
 
 
 def __main__():

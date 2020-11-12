@@ -1,14 +1,8 @@
 import threading
-import ServerIO
+from ServerIO import ServerIO
 import UpdateMonitors
 import time
 
-url = ''
-
-api_url = '127.0.0.1'
-api_user = 'root'
-# api_pwd = ''
-api_pwd = '63MH0UT7DCW30'
 
 defined_monitors = {}
 
@@ -17,11 +11,12 @@ class Orchestrator:
     def __init__(self):
         self.triggers = []  # collection of threads that will run checker functions
         self.monitors = {}
-        self.triggerIds = set([])
+        self.triggerIds = set([]) 
+        self.serverIO = ServerIO()
 
     def update_triggers(self):
         # add new triggers to current triggers in the system
-        (newTriggers, remove_triggers) = ServerIO.read_triggers(api_url, api_user, api_pwd, self.triggerIds)
+        (newTriggers, remove_triggers) = self.serverIO.read_triggers(self.triggerIds)
         self.triggers.extend(newTriggers)
         for trigger in self.triggers:
             self.triggerIds.add(trigger.trigger_id)
@@ -59,7 +54,7 @@ class Orchestrator:
 def __main__():
     global defined_monitors
     orchestrator = Orchestrator()
-    UpdateMonitors.update_monitors(api_url, api_user, api_pwd)
+    UpdateMonitors.update_monitors()
     defined_monitors = UpdateMonitors.monitors
     orchestrator.initialize_monitors()
     orchestrator.update()

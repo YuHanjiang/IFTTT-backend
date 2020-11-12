@@ -1,11 +1,8 @@
 import re
 import time
-import ServerIO
+from ServerIO import ServerIO
 
-api_url = '127.0.0.1'
-api_user = 'root'
-# api_pwd = ''
-api_pwd = '63MH0UT7DCW30'
+
 
 
 # abstract Monitor class to be implemented in the backend of IFTTT
@@ -27,14 +24,15 @@ class Monitor:
                 result = result or self.funcList[i](self.paraList[i][0], self.paraList[i][1])
             if result:
                 print(self.triggerId, 'Alert', sep=' ')
-                ServerIO.pushNotification(api_url, api_user, api_pwd, self.triggerId, self.trigger_owner, self.trigger)
+                self.serverIO.pushNotification(self.triggerId, self.trigger_owner, self.trigger)
                 time.sleep(self.refresh_time)
             else:
                 print(self.triggerId, 'Passed', sep=' ')
                 time.sleep(self.interval)
 
     def __init__(self, trigger):
-        self.conditionMet = False
+        self.conditionMet = False 
+        self.serverIO = ServerIO()
 
         if trigger is not None:
             self.trigger = trigger

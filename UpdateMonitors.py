@@ -1,7 +1,8 @@
 import glob
 import re
 import mysql.connector
-import importlib
+import importlib 
+import json
 
 monitors = {}
 
@@ -21,13 +22,15 @@ def import_monitors():
             monitors[module_name] = module
 
 
-def update_api_list(url, usr, pwd):
-    db = mysql.connector.connect(
-        host=url,
-        user=usr,
-        password=pwd,
-        database="ifttt"
-    )
+def update_api_list(): 
+    with open("DatabaseConfig.json") as file: 
+        fileDic = json.load(file)
+        db = mysql.connector.connect(
+            host=fileDic["host"],
+            user=fileDic["user"],
+            password=fileDic["pwd"],
+            database=fileDic["db"]
+        )
 
     cursor = db.cursor()
 
@@ -43,6 +46,6 @@ def update_api_list(url, usr, pwd):
     db.commit()
 
 
-def update_monitors(url, usr, pwd):
+def update_monitors():
     import_monitors()
-    update_api_list(url, usr, pwd)
+    update_api_list()

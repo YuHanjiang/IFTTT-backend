@@ -3,8 +3,6 @@ import time
 from ServerIO import ServerIO
 
 
-
-
 # abstract Monitor class to be implemented in the backend of IFTTT
 class Monitor:
 
@@ -31,7 +29,7 @@ class Monitor:
                 time.sleep(self.interval)
 
     def __init__(self, trigger):
-        self.conditionMet = False 
+        self.conditionMet = False
         self.serverIO = ServerIO()
 
         if trigger is not None:

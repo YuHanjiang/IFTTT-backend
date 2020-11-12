@@ -1,17 +1,17 @@
 import mysql.connector
 import re
 from Trigger import Trigger
-import json 
+import json
 
 
-class ServerIO: 
-    
-    def __init__(self): 
-        with open("DatabaseConfig.json") as file: 
-            fileDic = json.load(file) 
-            self.host = fileDic["host"] 
-            self.user = fileDic["user"] 
-            self.pwd = fileDic["pwd"]  
+class ServerIO:
+
+    def __init__(self):
+        with open("DatabaseConfig.json") as file:
+            fileDic = json.load(file)
+            self.host = fileDic["host"]
+            self.user = fileDic["user"]
+            self.pwd = fileDic["pwd"]
             self.databaseName = fileDic["db"]
 
         self.db = mysql.connector.connect(
@@ -19,13 +19,12 @@ class ServerIO:
             user=self.user,
             password=self.pwd,
             database=self.databaseName
-    )
+        )
 
-    def read_triggers(self,triggerIds):
+    def read_triggers(self, triggerIds):
         trigger_list = []
         read_in_triggerId = []
 
-       
         cursor = self.db.cursor()
 
         cursor.execute('SELECT * FROM triggers')
@@ -62,25 +61,21 @@ class ServerIO:
         # time.sleep(10)
         return trigger_list, remove_triggers
 
-
     # Sanitize url to make it compatible to requests module
     def sanitize_url(self):
         url = self.host.strip('http://')
         url = url.strip('https://')
         return url
 
-
     def pushNotification(self, triggerId, owner, trigger):
-        
 
         cursor = self.db.cursor()
 
         cursor.execute("SELECT * FROM triggers where trigger_id = %s", (triggerId,))
 
         if cursor.fetchone() is not None:
-
             cursor.execute("INSERT IGNORE INTO pending_notifications VALUES (%s, %s, %s)",
-                        (str(triggerId), str(trigger.condition_string), str(owner)))
+                           (str(triggerId), str(trigger.condition_string), str(owner)))
 
         self.db.commit()
 

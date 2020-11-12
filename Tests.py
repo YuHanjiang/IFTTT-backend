@@ -1,11 +1,11 @@
 import requests
 from pythonping import ping
 import mysql.connector
-import importlib
+# import importlib
 
 
 def mysql_request():
-    mydb = mysql.connector.connect(
+    db = mysql.connector.connect(
         host="localhost",
         user="root",
         password="63MH0UT7DCW30",
@@ -13,9 +13,9 @@ def mysql_request():
         auth_plugin='mysql_native_password'
     )
 
-    print(mydb)
+    print(db)
 
-    cursor = mydb.cursor()
+    cursor = db.cursor()
     t_id = 3
     cursor.execute("Select * from triggers where trigger_id = %s", t_id)
 

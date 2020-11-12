@@ -59,7 +59,7 @@ class Orchestrator:
 def __main__():
     global defined_monitors
     orchestrator = Orchestrator()
-    UpdateMonitors.update_monitors()
+    UpdateMonitors.update_monitors(api_url, api_user, api_pwd)
     defined_monitors = UpdateMonitors.monitors
     orchestrator.initialize_monitors()
     orchestrator.update()

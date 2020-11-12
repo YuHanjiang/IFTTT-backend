@@ -43,6 +43,6 @@ def update_api_list(url, usr, pwd):
     db.commit()
 
 
-def update_monitors():
+def update_monitors(url, usr, pwd):
     import_monitors()
-    update_api_list()
+    update_api_list(url, usr, pwd)

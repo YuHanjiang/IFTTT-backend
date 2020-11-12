@@ -1,8 +1,9 @@
 import re
 import time
-from ServerIO import ServerIO
 
 
+
+>>>>>>> parent of 0fe96a6... database config
 # abstract Monitor class to be implemented in the backend of IFTTT
 class Monitor:
 
@@ -22,7 +23,7 @@ class Monitor:
                 result = result or self.funcList[i](self.paraList[i][0], self.paraList[i][1])
             if result:
                 print(self.triggerId, 'Alert', sep=' ')
-                self.serverIO.pushNotification(self.triggerId, self.trigger_owner, self.trigger)
+                ServerIO.pushNotification(api_url, api_user, api_pwd, self.triggerId, self.trigger_owner, self.trigger)
                 time.sleep(self.refresh_time)
             else:
                 print(self.triggerId, 'Passed', sep=' ')
@@ -30,7 +31,10 @@ class Monitor:
 
     def __init__(self, trigger):
         self.conditionMet = False
+<<<<<<< HEAD
         self.serverIO = ServerIO()
+=======
+>>>>>>> parent of 0fe96a6... database config
 
         if trigger is not None:
             self.trigger = trigger

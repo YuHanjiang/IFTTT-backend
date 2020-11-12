@@ -1,7 +1,7 @@
 import threading
-from ServerIO import ServerIO
 import UpdateMonitors
 import time
+<<<<<<< HEAD
 import json
 
 defined_monitors = {}
@@ -12,13 +12,15 @@ class Orchestrator:
         self.triggers = []  # collection of threads that will run checker functions
         self.monitors = {}
         self.triggerIds = set([])
+<<<<<<< HEAD
         self.serverIO = ServerIO()
         with open("Monitors.json") as file:
             self.monitorDic = json.load(file)
+=======
+>>>>>>> parent of 0fe96a6... database config
 
     def update_triggers(self):
         # add new triggers to current triggers in the system
-        (newTriggers, remove_triggers) = self.serverIO.read_triggers(self.triggerIds)
         self.triggers.extend(newTriggers)
         for trigger in self.triggers:
             self.triggerIds.add(trigger.trigger_id)
@@ -54,7 +56,7 @@ class Orchestrator:
 def __main__():
     global defined_monitors
     orchestrator = Orchestrator()
-    UpdateMonitors.update_monitors()
+    UpdateMonitors.update_monitors(api_url, api_user, api_pwd)
     defined_monitors = UpdateMonitors.monitors
     orchestrator.initialize_monitors()
     orchestrator.update()

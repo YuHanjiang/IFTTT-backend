@@ -2,15 +2,11 @@ import re
 import time
 import ServerIO
 
-<<<<<<< HEAD
-=======
 api_url = '127.0.0.1'
 api_user = 'root'
 # api_pwd = ''
 api_pwd = '63MH0UT7DCW30'
 
-
->>>>>>> parent of 0fe96a6... database config
 # abstract Monitor class to be implemented in the backend of IFTTT
 class Monitor:
 
@@ -38,10 +34,6 @@ class Monitor:
 
     def __init__(self, trigger):
         self.conditionMet = False
-<<<<<<< HEAD
-        self.serverIO = ServerIO()
-=======
->>>>>>> parent of 0fe96a6... database config
 
         if trigger is not None:
             self.trigger = trigger

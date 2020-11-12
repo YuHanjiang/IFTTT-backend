@@ -1,7 +1,6 @@
 import mysql.connector
 import re
 from Trigger import Trigger
-<<<<<<< HEAD
 import json
 
 

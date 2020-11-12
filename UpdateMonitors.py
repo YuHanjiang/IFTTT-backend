@@ -40,7 +40,7 @@ def update_api_list():
             if vars_string == '':
                 vars_string += var
             else:
-                vars_string = vars_string + ' ' + var
+                vars_string = vars_string + ',' + var
         cursor.execute("INSERT IGNORE INTO monitors VALUES(%s, %s)", (monitor_name, vars_string))
 
     db.commit()

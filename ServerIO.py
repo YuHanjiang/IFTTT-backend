@@ -5,6 +5,7 @@ from Trigger import Trigger
 
 def read_triggers(url, user, pwd, triggerIds):
     trigger_list = []
+    read_in_triggerId = []
 
     db = mysql.connector.connect(
         host=url,
@@ -18,13 +19,13 @@ def read_triggers(url, user, pwd, triggerIds):
     cursor.execute('SELECT * FROM triggers')
 
     trigger_query = cursor.fetchall()
+
     for t in trigger_query:
         (name, monitor_type, severity, url, message, trigger_id, condition, owner) = t
         trigger_condition = {}
-
-        #dont add triggers that are already in the system 
-        if trigger_id not in triggerIds: 
-          
+        read_in_triggerId.append(trigger_id)
+        # dont add triggers that are already in the system
+        if trigger_id not in triggerIds:
 
             # Parse condition data
             cond = re.search(r'^(.*): (.*)$', condition)
@@ -43,9 +44,11 @@ def read_triggers(url, user, pwd, triggerIds):
 
                 trigger_list.append(trigger)
 
+    remove_triggers = [t_id for t_id in triggerIds if t_id not in read_in_triggerId]
+
     print('Triggers Loaded')
     # time.sleep(10)
-    return trigger_list
+    return trigger_list, remove_triggers
 
 
 # Sanitize url to make it compatible to requests module

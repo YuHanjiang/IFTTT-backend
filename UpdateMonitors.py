@@ -25,9 +25,6 @@ def update_api_list():
     return None
 
 
-def __main__():
+def update_monitors():
     import_monitors()
     update_api_list()
-
-
-__main__()

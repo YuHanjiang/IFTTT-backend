@@ -15,7 +15,7 @@ class Monitor:
 
     def run(self):
         self._dicParser()
-        while True:
+        while not self.trigger.terminated:
             result = False
             for i in range(len(self.funcList)):
                 # if self.funcList[i](self.paraList[i][0], self.paraList[i][1]):

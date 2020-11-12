@@ -9,3 +9,4 @@ class Trigger:
         self.owner = owner
         self.condition_string = condition_string 
         self.hasMonitor = False
+        self.terminated = False

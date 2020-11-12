@@ -68,7 +68,7 @@ def pushNotification(url, user, pwd, triggerId, owner, trigger):
     # query = "INSERT IGNORE INTO pending_notifications (trigger_id) Values (" + str(triggerId) + "," + \
     #         str(trigger.condition) + "," + str(owner) + ") ON DUPLICATE KEY UPDATE "
 
-    cursor.execute("INSERT INTO pending_notifications VALUES (%s, %s, %s)",
+    cursor.execute("INSERT IGNORE INTO pending_notifications VALUES (%s, %s, %s)",
                    (str(triggerId), str(trigger.condition_string), str(owner)))
     db.commit()
     print("added to pending table")

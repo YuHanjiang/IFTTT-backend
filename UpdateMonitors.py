@@ -1,5 +1,6 @@
 import glob
 import re
+import mysql.connector
 import importlib
 
 monitors = {}
@@ -20,9 +21,26 @@ def import_monitors():
             monitors[module_name] = module
 
 
-def update_api_list():
-    # @ todo
-    return None
+def update_api_list(url, usr, pwd):
+    db = mysql.connector.connect(
+        host=url,
+        user=usr,
+        password=pwd,
+        database="ifttt"
+    )
+
+    cursor = db.cursor()
+
+    for monitor_name in monitors.keys():
+        vars_string = ''
+        for var in monitors[monitor_name].monitor_var:
+            if vars_string == '':
+                vars_string += var
+            else:
+                vars_string = vars_string + ' ' + var
+        cursor.execute("INSERT IGNORE INTO monitors VALUES(%s, %s)", (monitor_name, vars_string))
+
+    db.commit()
 
 
 def update_monitors():

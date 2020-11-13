@@ -26,54 +26,41 @@ class ServerIO:
         read_in_triggerId = []
 
         cursor = self.db.cursor()
-=======
 
+        cursor.execute('SELECT * FROM triggers')
 
-def read_triggers(url, user, pwd, triggerIds):
-    trigger_list = []
-    read_in_triggerId = []
+        trigger_query = cursor.fetchall()
 
-    db = mysql.connector.connect(
-        host=url,
-        user=user,
-        password=pwd,
-        database="ifttt"
-    )
->>>>>>> parent of 0fe96a6... database config
+        for t in trigger_query:
+            (name, monitor_type, severity, url, message, trigger_id, condition, owner) = t
+            trigger_condition = {}
+            read_in_triggerId.append(trigger_id)
+            # dont add triggers that are already in the system
+            if trigger_id not in triggerIds:
 
-    cursor = db.cursor()
+                # Parse condition data
+                cond = re.search(r'^(.*): (.*)$', condition)
+                if cond is not None:
+                    test_method = cond.group(1)
+                    test_values = cond.group(2)
+                    if test_method == 'Latency':
+                        trigger_condition[test_method] = ['>=' + test_values]
+                    elif test_method == 'Status code':
+                        test_values = test_values.split(', ')
+                        trigger_condition[test_method] = ['==' + t for t in test_values]
 
-    cursor.execute('SELECT * FROM triggers')
+                    url = self.sanitize_url()
 
-    trigger_query = cursor.fetchall()
+                    trigger = Trigger(trigger_id, url, monitor_type, trigger_condition, severity, owner, condition)
 
-    for t in trigger_query:
-        (name, monitor_type, severity, url, message, trigger_id, condition, owner) = t
-        trigger_condition = {}
-        read_in_triggerId.append(trigger_id)
-        # dont add triggers that are already in the system
-        if trigger_id not in triggerIds:
+                    trigger_list.append(trigger)
 
-            # Parse condition data
-            cond = re.search(r'^(.*): (.*)$', condition)
-            if cond is not None:
-                test_method = cond.group(1)
-                test_values = cond.group(2)
-                if test_method == 'Latency':
-                    trigger_condition[test_method] = ['>=' + test_values]
-                elif test_method == 'Status code':
-                    test_values = test_values.split(', ')
-                    trigger_condition[test_method] = ['==' + t for t in test_values]
+        remove_triggers = [t_id for t_id in triggerIds if t_id not in read_in_triggerId]
 
-                url = sanitize_url(url)
+        print('Triggers Loaded')
+        # time.sleep(10)
+        return trigger_list, remove_triggers
 
-                trigger = Trigger(trigger_id, url, monitor_type, trigger_condition, severity, owner, condition)
-
-                trigger_list.append(trigger)
-
-    remove_triggers = [t_id for t_id in triggerIds if t_id not in read_in_triggerId]
-
-<<<<<<< HEAD
     # Sanitize url to make it compatible to requests module
     def sanitize_url(self):
         url = self.host.strip('http://')
@@ -81,43 +68,15 @@ def read_triggers(url, user, pwd, triggerIds):
         return url
 
     def pushNotification(self, triggerId, owner, trigger):
-=======
-    print('Triggers Loaded')
-    # time.sleep(10)
-    return trigger_list, remove_triggers
 
+        cursor = self.db.cursor()
 
-# Sanitize url to make it compatible to requests module
-def sanitize_url(url):
-    url = url.strip('http://')
-    url = url.strip('https://')
-    return url
+        cursor.execute("SELECT * FROM triggers where trigger_id = %s", (triggerId,))
 
->>>>>>> parent of 0fe96a6... database config
-
-def pushNotification(url, user, pwd, triggerId, owner, trigger):
-    db = mysql.connector.connect(
-        host=url,
-        user=user,
-        password=pwd,
-        database="ifttt"
-    )
-
-    cursor = db.cursor()
-
-    cursor.execute("SELECT * FROM triggers where trigger_id = %s", (triggerId,))
-
-<<<<<<< HEAD
         if cursor.fetchone() is not None:
             cursor.execute("INSERT IGNORE INTO pending_notifications VALUES (%s, %s, %s)",
                            (str(triggerId), str(trigger.condition_string), str(owner)))
-=======
-    if cursor.fetchone() is not None:
 
-        cursor.execute("INSERT IGNORE INTO pending_notifications VALUES (%s, %s, %s)",
-                       (str(triggerId), str(trigger.condition_string), str(owner)))
->>>>>>> parent of 0fe96a6... database config
+        self.db.commit()
 
-    db.commit()
-
-    print("added " + str(triggerId) + " to pending table")
+        print("added " + str(triggerId) + " to pending table")

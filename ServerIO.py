@@ -4,6 +4,12 @@ from Trigger import Trigger
 import json
 
 
+def sanitize_url(url):
+    url = url.strip('http://')
+    url = url.strip('https://')
+    return url
+
+
 class ServerIO:
 
     def __init__(self):
@@ -49,7 +55,7 @@ class ServerIO:
                         test_values = test_values.split(', ')
                         trigger_condition[test_method] = ['==' + t for t in test_values]
 
-                    url = self.sanitize_url()
+                    url = sanitize_url(url)
 
                     trigger = Trigger(trigger_id, url, monitor_type, trigger_condition, severity, owner, condition)
 
@@ -62,10 +68,6 @@ class ServerIO:
         return trigger_list, remove_triggers
 
     # Sanitize url to make it compatible to requests module
-    def sanitize_url(self):
-        url = self.host.strip('http://')
-        url = url.strip('https://')
-        return url
 
     def pushNotification(self, triggerId, owner, trigger):
 

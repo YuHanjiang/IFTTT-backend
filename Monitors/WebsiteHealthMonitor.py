@@ -17,6 +17,7 @@ class WebsiteHealthChecker(Monitor):
             r = requests.get('http://' + self.src)
 
         except requests.exceptions.RequestException as err:
+            print(self.src)
             print('Access Denied')
             return True
 

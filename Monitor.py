@@ -10,7 +10,9 @@ class Monitor:
 
     def run(self):
         self._dicParser()
-        while not self.trigger.terminated:
+        while not self.trigger.terminated: 
+            #check wether trigger is active or not  
+            active = self.serverIO.checkIfActive(self.trigger.trigger_id)
             result = False
             for i in range(len(self.funcList)):
                 # if self.funcList[i](self.paraList[i][0], self.paraList[i][1]):
@@ -19,14 +21,20 @@ class Monitor:
                 #
                 # else:
                 #     print(self.triggerId, 'Satisfy', sep=' ')
-                result = result or self.funcList[i](self.paraList[i][0], self.paraList[i][1])
-            if result:
-                print(self.triggerId, 'Alert', sep=' ')
-                self.serverIO.pushNotification(self.triggerId, self.trigger_owner, self.trigger)
-                time.sleep(self.refresh_time)
-            else:
+                result = result or self.funcList[i](self.paraList[i][0], self.paraList[i][1]) 
+
+            if result: 
+                #if it is active sound alarm 
+                if active ==1:
+                    print(self.triggerId, 'Alert', sep=' ')
+                    self.serverIO.pushNotification(self.triggerId, self.trigger_owner, self.trigger) 
+                    #active = 0
+            else: 
+                #if not active switch back to active 
+                if active == 0: 
+                    ServerIO.setBackToActive(self.triggerId)
                 print(self.triggerId, 'Passed', sep=' ')
-                time.sleep(self.interval)
+            time.sleep(self.interval)
 
     def __init__(self, trigger):
         self.conditionMet = False
@@ -39,10 +47,7 @@ class Monitor:
             self.src = trigger.src
             self.conditions = trigger.condition
             self.trigger_owner = trigger.owner
-            if 'Interval' not in self.conditions.keys():
-                self.interval = 5
-            else:
-                self.interval = self.conditions['Interval']
+            self.interval = trigger.interval 
 
         self.funcList = []
         self.paraList = []

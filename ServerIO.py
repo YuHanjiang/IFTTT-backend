@@ -38,7 +38,7 @@ class ServerIO:
         trigger_query = cursor.fetchall()
 
         for t in trigger_query:
-            (name, monitor_type, severity, url, message, trigger_id, condition, owner) = t
+            (name, monitor_type, severity, url, message, trigger_id, condition, owner, active, interval) = t
             trigger_condition = {}
             read_in_triggerId.append(trigger_id)
             # dont add triggers that are already in the system
@@ -57,7 +57,7 @@ class ServerIO:
 
                     url = sanitize_url(url)
 
-                    trigger = Trigger(trigger_id, url, monitor_type, trigger_condition, severity, owner, condition)
+                    trigger = Trigger(trigger_id, url, monitor_type, trigger_condition, severity, owner, condition, interval)
 
                     trigger_list.append(trigger)
 
@@ -81,4 +81,18 @@ class ServerIO:
 
         self.db.commit()
 
-        print("added " + str(triggerId) + " to pending table")
+        print("added " + str(triggerId) + " to pending table") 
+
+    def checkIfActive(self,triggerID): 
+         
+        cursor = self.db.cursor()
+        cursor.execute("select trigger_status from triggers where trigger_id = " + str(triggerID) )  
+        val = cursor.fetchall()[0][0]  
+        self.db.commit() 
+        return val 
+        
+    def setBackToActive(self, triggerID): 
+            cursor = self.db.cursor()  
+            cursor.execute("update triggers set trigger_status = 1 where trigger_id = " + str(triggerID)) 
+            self.db.commit()
+        

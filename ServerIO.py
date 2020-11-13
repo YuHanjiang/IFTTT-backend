@@ -54,7 +54,8 @@ class ServerIO:
                     elif test_method == 'Status code':
                         test_values = test_values.split(', ')
                         trigger_condition[test_method] = ['==' + t for t in test_values]
-
+                    elif test_method == 'Temp':
+                        trigger_condition[test_method] = ['>=' + test_values]
                     url = sanitize_url(url)
 
                     trigger = Trigger(trigger_id, url, monitor_type, trigger_condition, severity, owner, condition, interval)

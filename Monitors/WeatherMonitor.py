@@ -16,8 +16,13 @@ class WeatherMonitor(Monitor):
         try:
             r = requests.get("http://" + self.src)
             if r.status_code == 200:
-                temp = float(json.loads(r.json())["main"]["temp"])
-                return func(temp, val)
+                try:
+                    weather_json = r.json()
+                    temp = float(weather_json['main']['temp'])
+                    return func(temp, val)
+                except KeyError as ke:
+                    print("No key:", ke, sep=' ')
+                    return True
             else:
                 return True
 

@@ -14,14 +14,14 @@ class Monitor:
             #check wether trigger is active or not  
             active = self.serverIO.checkIfActive(self.trigger.trigger_id)
             result = False
-            for i in range(len(self.funcList)):
-                # if self.funcList[i](self.paraList[i][0], self.paraList[i][1]):
-                #     self.conditionMet = True
-                #     print(self.triggerId, 'Notify Server', sep=' ')
-                #
-                # else:
-                #     print(self.triggerId, 'Satisfy', sep=' ')
-                result = result or self.funcList[i](self.paraList[i][0], self.paraList[i][1]) 
+            for i in range(len(self.funcList)):  
+                funClause = self.funcList[i] 
+                paraClause = self.paraList[i]  
+                clauseResult = True
+                for j in range(len(funClause)):  
+                    clauseResult = clauseResult and funClause[j](paraClause[j][0],paraClause[j][1])
+                result = result or clauseResult 
+
 
             if result: 
                 #if it is active sound alarm 
@@ -58,14 +58,14 @@ class Monitor:
     def _dicParser(self):
         funcs = self._mapper()
 
-        for key in self.conditions.keys():
-            self.funcList.append(funcs[key])
+        
+        for clause in self.conditions:   
+            clauseFuns = [] 
+            clausePara = []
+            for var,cond in clause:  
+                clauseFuns.append(funcs[var])  
 
-        for value_lists in self.conditions.values():
-            for value in value_lists:
-                cmpFun = None
-                val = None
-                reg = re.match(r'([<>=][<>=])([0-9]+)', value)
+                reg = re.match(r'([<>=][<>=])([0-9]+)', cond)
                 if reg is not None:
                     clause = reg.group(1)
                     val = float(reg.group(2))
@@ -77,17 +77,12 @@ class Monitor:
                             cmpFun = self.greater_equal
                         elif clause == "<=":
                             cmpFun = self.lesser_equal
-                else:
-                    reg = re.match(r'^(\d+) - (\d+)$', value)
-                    if reg is not None:
-                        f = reg.group(1)
-                        last = reg.group(2)
-                        val = (float(f), float(last))
-                        if f is not None and last is not None:
-                            cmpFun = self.between
+                
+                clausePara.append((cmpFun, val)) 
+            self.funcList.append(clauseFuns) 
+            self.paraList.append(clausePara)
 
-                if cmpFun:
-                    self.paraList.append((cmpFun, val))
+
 
         # for string in self.conditions.values():
         #     cmpFun = None

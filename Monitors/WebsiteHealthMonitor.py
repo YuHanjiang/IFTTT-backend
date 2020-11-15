@@ -2,13 +2,13 @@ import requests
 import pythonping
 from Monitor import Monitor
 
-monitor_var = ['Status Code', 'Latency']
+monitor_var = ['StatusCode', 'Latency']
 
 
 class WebsiteHealthChecker(Monitor):
 
     def _mapper(self):
-        varToFuncMapping = {'Status code': self._HTTPRESP_check, 'Latency': self._ping_check}
+        varToFuncMapping = {'StatusCode': self._HTTPRESP_check, 'Latency': self._ping_check}
 
         return varToFuncMapping
 

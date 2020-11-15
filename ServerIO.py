@@ -37,28 +37,40 @@ class ServerIO:
 
         trigger_query = cursor.fetchall()
 
+        # Getting the trigger_query
         for t in trigger_query:
             (name, monitor_type, severity, url, message, trigger_id, condition, owner, active, interval) = t
             trigger_condition = {}
             read_in_triggerId.append(trigger_id)
+
             # dont add triggers that are already in the system
             if trigger_id not in triggerIds:
-
                 # Parse condition data
-                cond = re.search(r'^(.*): (.*)$', condition)
-                if cond is not None:
-                    test_method = cond.group(1)
-                    test_values = cond.group(2)
-                    if test_method == 'Latency':
-                        trigger_condition[test_method] = ['>=' + test_values]
-                    elif test_method == 'Status code':
-                        test_values = test_values.split(', ')
-                        trigger_condition[test_method] = ['==' + t for t in test_values]
-                    elif test_method == 'Temp':
-                        trigger_condition[test_method] = ['>=' + test_values]
-                    url = sanitize_url(url)
+                # Splitting conditions into clauses
+                condition_clauses = condition.split('||')
+                condition_list = []
+                if condition_clauses is not None:
+                    for clause in condition_clauses:
+                        clause_list = []
+                        # Split conditions into each sub-conditions (e.g. Status Code == 100)
+                        sub_conditions = clause.split('&&')
+                        if sub_conditions is not None:
+                            for sub_cond in sub_conditions:
+                                regex = r'(.+)(>=|<=|==|!=|<|>|contains|does not contain)(-?[0-9]+)'
+                                cond = re.search(regex, sub_cond)
+                                if cond is not None:
+                                    test_method = cond.group(1)
+                                    test_operator = cond.group(2)
+                                    test_values = cond.group(3)
+                                    # Append current condition into the list of conditions for the clause
+                                    clause_list.append((test_method, test_operator + test_values))
 
-                    trigger = Trigger(trigger_id, url, monitor_type, trigger_condition, severity, owner, condition, interval)
+                        # Append the current list of all conditions in a clause to the condition_list
+                        condition_list.append(clause_list)
+
+                    url = sanitize_url(url)
+                    trigger = Trigger(trigger_id, url, monitor_type, condition_list, severity, owner,
+                                      condition, interval)
 
                     trigger_list.append(trigger)
 
@@ -82,18 +94,17 @@ class ServerIO:
 
         self.db.commit()
 
-        print("added " + str(triggerId) + " to pending table") 
+        print("added " + str(triggerId) + " to pending table")
 
-    def checkIfActive(self,triggerID): 
-         
+    def checkIfActive(self, triggerID):
+
         cursor = self.db.cursor()
-        cursor.execute("select trigger_status from triggers where trigger_id = " + str(triggerID) )  
-        val = cursor.fetchall()[0][0]  
-        self.db.commit() 
-        return val 
-        
-    def setBackToActive(self, triggerID): 
-            cursor = self.db.cursor()  
-            cursor.execute("update triggers set trigger_status = 1 where trigger_id = " + str(triggerID)) 
-            self.db.commit()
-        
+        cursor.execute("select trigger_status from triggers where trigger_id = " + str(triggerID))
+        val = cursor.fetchall()[0][0]
+        self.db.commit()
+        return val
+
+    def setBackToActive(self, triggerID):
+        cursor = self.db.cursor()
+        cursor.execute("update triggers set trigger_status = 1 where trigger_id = " + str(triggerID))
+        self.db.commit()

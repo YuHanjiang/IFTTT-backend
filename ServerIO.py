@@ -56,7 +56,7 @@ class ServerIO:
                         sub_conditions = clause.split('&&')
                         if sub_conditions is not None:
                             for sub_cond in sub_conditions:
-                                regex = r'(.+)(>=|<=|==|!=|<|>|contains|does not contain)(-?[0-9]+)'
+                                regex = r'(.+)(>=|<=|==|!=|<|=|>|contains|does not contain)(-?[0-9]+|\w+)'
                                 cond = re.search(regex, sub_cond)
                                 if cond is not None:
                                     test_method = cond.group(1)

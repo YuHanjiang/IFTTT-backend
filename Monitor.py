@@ -76,7 +76,11 @@ class Monitor:
                         elif clause == ">=":
                             cmpFun = self.greater_equal
                         elif clause == "<=":
-                            cmpFun = self.lesser_equal
+                            cmpFun = self.lesser_equal 
+                        elif clause == ">":
+                            cmpFun = self.greater
+                        elif clause == "<":
+                            cmpFun = self.lesser
                 
                 clausePara.append((cmpFun, val)) 
             self.funcList.append(clauseFuns) 
@@ -140,6 +144,13 @@ class Monitor:
         if a <= b:
             return True
         else:
-            return False
+            return False 
+    @staticmethod
+    def greater(a, b):
+        return a > b
+
+    @staticmethod
+    def lesser(a, b):
+        return a < b
 
 # PUBLIC FUNCTIONS

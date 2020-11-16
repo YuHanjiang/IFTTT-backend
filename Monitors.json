@@ -1,4 +1,4 @@
 {
-    "Website Health Check" : "WebsiteHealthMonitor", 
-    "Weather Check": "WeatherMonitor"
+    "WebsiteHealthMonitor" : "WebsiteHealthMonitor",
+    "WeatherCheckMonitor": "WeatherMonitor"
 }

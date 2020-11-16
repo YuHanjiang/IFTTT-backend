@@ -39,7 +39,7 @@ class Orchestrator:
         for trigger in self.triggers:
             if not trigger.hasMonitor:
                 trigger.hasMonitor = True
-                monitor = defined_monitors[self.monitorDic[trigger.monitor]]
+                monitor = defined_monitors[trigger.monitor]
                 monitor_thread = threading.Thread(target=monitor.start, args=(trigger,))
                 monitor_thread.start()
                 self.monitors[trigger.trigger_id] = monitor_thread

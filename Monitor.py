@@ -28,11 +28,11 @@ class Monitor:
                     print(self.triggerId, 'Alert', sep=' ')
                     self.serverIO.pushNotification(self.triggerId, self.trigger_owner, self.trigger)
                     # active = 0
-            # else:
-            #     # if not active switch back to active
-            #     if active == 0:
-            #         self.serverIO.setBackToActive(self.triggerId)
-            #     print(self.triggerId, 'Passed', sep=' ')
+            else:
+                # if not active switch back to active
+                if active == 0:
+                    self.serverIO.setBackToActive(self.triggerId)
+                print(self.triggerId, 'Passed', sep=' ')
             time.sleep(self.interval)
 
     def __init__(self, trigger):

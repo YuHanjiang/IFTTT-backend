@@ -32,7 +32,7 @@ class Monitor:
             else: 
                 #if not active switch back to active 
                 if active == 0: 
-                    ServerIO.setBackToActive(self.triggerId)
+                    self.serverIO.setBackToActive(self.triggerId)
                 print(self.triggerId, 'Passed', sep=' ')
             time.sleep(self.interval)
 

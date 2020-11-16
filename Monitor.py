@@ -72,7 +72,7 @@ class Monitor:
                     val = float(reg.group(2))
 
                     if clause is not None and val is not None:
-                        if clause == "==" or "=":
+                        if clause == "==" or clause == "=":
                             cmpFun = self.equal_equal
                         elif clause == ">=":
                             cmpFun = self.greater_equal

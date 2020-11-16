@@ -31,7 +31,7 @@ class Monitor:
             else:
                 # if not active switch back to active
                 if active == 0:
-                    ServerIO.setBackToActive(self.triggerId)
+                    self.serverIO.setBackToActive(self.triggerId)
                 print(self.triggerId, 'Passed', sep=' ')
             time.sleep(self.interval)
 
@@ -71,12 +71,16 @@ class Monitor:
                     val = float(reg.group(2))
 
                     if clause is not None and val is not None:
-                        if clause == "==":
+                        if clause == "==" or "=":
                             cmpFun = self.equal_equal
                         elif clause == ">=":
                             cmpFun = self.greater_equal
                         elif clause == "<=":
                             cmpFun = self.lesser_equal
+                        elif clause == ">":
+                            cmpFun = self.greater
+                        elif clause == "<":
+                            cmpFun = self.lesser
 
                 clausePara.append((cmpFun, val))
             self.funcList.append(clauseFuns)
@@ -139,5 +143,13 @@ class Monitor:
             return True
         else:
             return False
+
+    @staticmethod
+    def greater(a, b):
+        return a > b
+
+    @staticmethod
+    def lesser(a, b):
+        return a < b
 
 # PUBLIC FUNCTIONS

@@ -66,7 +66,7 @@ class Monitor:
                 cmpFun = None
                 val = None
 
-                reg = re.match(r'([<>=][<>=])([0-9]+)', cond)
+                reg = re.match(r'(>=|<=|==|!=|<|=|>|contains|does not contain)([0-9]+)', cond)
                 if reg is not None:
                     clause = reg.group(1)
                     val = float(reg.group(2))
@@ -143,7 +143,14 @@ class Monitor:
         if a <= b:
             return True
         else:
-            return False
+            return False 
+    @staticmethod
+    def greater(a, b):
+        return a > b
+
+    @staticmethod
+    def lesser(a, b):
+        return a < b
 
     @staticmethod
     def greater(a, b):

@@ -35,7 +35,7 @@ class ServerIO:
 
         cursor.execute('SELECT * FROM triggers')
 
-        trigger_query = cursor.fetchall()
+        trigger_query = cursor.fetchall() 
         self.db.commit()
 
         # Getting the trigger_query
@@ -78,7 +78,7 @@ class ServerIO:
         remove_triggers = [t_id for t_id in triggerIds if t_id not in read_in_triggerId]
 
         print('Triggers Loaded')
-        # time.sleep(10)
+        # time.sleep(10) 
         return trigger_list, remove_triggers
 
     # Sanitize url to make it compatible to requests module

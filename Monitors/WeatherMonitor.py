@@ -1,5 +1,4 @@
 from Monitor import Monitor
-import json
 import requests
 
 monitor_var = ["Temp"]

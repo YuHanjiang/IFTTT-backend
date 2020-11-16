@@ -24,13 +24,8 @@ class WebsiteHealthChecker(Monitor):
         return func(int(r.status_code), val)
 
     def _ping_check(self, func, val):
-        print(self.src)
-        print(val)
         r = pythonping.ping(self.src, size=50)
         a = r.rtt_avg_ms
-        print(a)
-        print(func(float(a), val))
-        print(func)
         return func(float(a), val)
 
 

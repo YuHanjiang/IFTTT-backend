@@ -10,9 +10,8 @@ class Monitor:
 
     def run(self):
         self._dicParser()
-        print(self.funcList)
         while not self.trigger.terminated:
-            # check wether trigger is active or not
+            # check whether trigger is active or not
             active = self.serverIO.checkIfActive(self.trigger.trigger_id)
             result = False
             for i in range(len(self.funcList)):
@@ -143,14 +142,7 @@ class Monitor:
         if a <= b:
             return True
         else:
-            return False 
-    @staticmethod
-    def greater(a, b):
-        return a > b
-
-    @staticmethod
-    def lesser(a, b):
-        return a < b
+            return False
 
     @staticmethod
     def greater(a, b):

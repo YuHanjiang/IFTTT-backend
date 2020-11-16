@@ -10,28 +10,27 @@ class Monitor:
 
     def run(self):
         self._dicParser()
-        while not self.trigger.terminated: 
-            #check wether trigger is active or not  
+        while not self.trigger.terminated:
+            # check wether trigger is active or not
             active = self.serverIO.checkIfActive(self.trigger.trigger_id)
             result = False
-            for i in range(len(self.funcList)):  
-                funClause = self.funcList[i] 
-                paraClause = self.paraList[i]  
+            for i in range(len(self.funcList)):
+                funClause = self.funcList[i]
+                paraClause = self.paraList[i]
                 clauseResult = True
-                for j in range(len(funClause)):  
-                    clauseResult = clauseResult and funClause[j](paraClause[j][0],paraClause[j][1])
-                result = result or clauseResult 
+                for j in range(len(funClause)):
+                    clauseResult = clauseResult and funClause[j](paraClause[j][0], paraClause[j][1])
+                result = result or clauseResult
 
-
-            if result: 
-                #if it is active sound alarm 
-                if active ==1:
+            if result:
+                # if it is active sound alarm
+                if active == 1:
                     print(self.triggerId, 'Alert', sep=' ')
-                    self.serverIO.pushNotification(self.triggerId, self.trigger_owner, self.trigger) 
-                    #active = 0
-            else: 
-                #if not active switch back to active 
-                if active == 0: 
+                    self.serverIO.pushNotification(self.triggerId, self.trigger_owner, self.trigger)
+                    # active = 0
+            else:
+                # if not active switch back to active
+                if active == 0:
                     ServerIO.setBackToActive(self.triggerId)
                 print(self.triggerId, 'Passed', sep=' ')
             time.sleep(self.interval)
@@ -47,7 +46,7 @@ class Monitor:
             self.src = trigger.src
             self.conditions = trigger.condition
             self.trigger_owner = trigger.owner
-            self.interval = trigger.interval 
+            self.interval = trigger.interval
 
         self.funcList = []
         self.paraList = []
@@ -58,12 +57,13 @@ class Monitor:
     def _dicParser(self):
         funcs = self._mapper()
 
-        
-        for clause in self.conditions:   
-            clauseFuns = [] 
+        for clause in self.conditions:
+            clauseFuns = []
             clausePara = []
-            for var,cond in clause:  
-                clauseFuns.append(funcs[var])  
+            for var, cond in clause:
+                clauseFuns.append(funcs[var])
+                cmpFun = None
+                val = None
 
                 reg = re.match(r'([<>=][<>=])([0-9]+)', cond)
                 if reg is not None:
@@ -77,12 +77,10 @@ class Monitor:
                             cmpFun = self.greater_equal
                         elif clause == "<=":
                             cmpFun = self.lesser_equal
-                
-                clausePara.append((cmpFun, val)) 
-            self.funcList.append(clauseFuns) 
+
+                clausePara.append((cmpFun, val))
+            self.funcList.append(clauseFuns)
             self.paraList.append(clausePara)
-
-
 
         # for string in self.conditions.values():
         #     cmpFun = None

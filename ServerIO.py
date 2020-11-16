@@ -102,6 +102,10 @@ class ServerIO:
         cursor.execute("select trigger_status from triggers where trigger_id = " + str(triggerID))
         val = cursor.fetchall()[0][0]
         self.db.commit()
+        if val == "on":
+            val = 1
+        else:
+            val = 0
         return val
 
     def setBackToActive(self, triggerID):

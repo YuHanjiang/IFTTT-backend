@@ -65,7 +65,7 @@ class Monitor:
                 cmpFun = None
                 val = None
 
-                reg = re.match(r'(>=|<=|==|!=|<|=|>|contains|does not contain)([0-9]+)', cond)
+                reg = re.match(r'(>=|<=|==|!=|<|=|>|contains|does not contain)(-?[0-9]+)', cond)
                 if reg is not None:
                     clause = reg.group(1)
                     val = float(reg.group(2))

@@ -36,6 +36,7 @@ class ServerIO:
         cursor.execute('SELECT * FROM triggers')
 
         trigger_query = cursor.fetchall()
+        self.db.commit()
 
         # Getting the trigger_query
         for t in trigger_query:

@@ -10,6 +10,7 @@ class Monitor:
 
     def run(self):
         self._dicParser()
+        print(self.funcList)
         while not self.trigger.terminated:
             # check wether trigger is active or not
             active = self.serverIO.checkIfActive(self.trigger.trigger_id)

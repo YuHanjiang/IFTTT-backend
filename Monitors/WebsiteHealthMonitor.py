@@ -29,6 +29,8 @@ class WebsiteHealthChecker(Monitor):
         r = pythonping.ping(self.src, size=50)
         a = r.rtt_avg_ms
         print(a)
+        print(func(float(a), val))
+        print(func)
         return func(float(a), val)
 
 

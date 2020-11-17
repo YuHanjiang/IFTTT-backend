@@ -73,10 +73,13 @@ class Monitor:
                 reg = re.match(r'(>=|<=|==|!=|<|=|>|contains|does not contain)(-?[0-9]+)', cond)
                 if reg is not None:
                     clause = reg.group(1)
-                    val = float(reg.group(2))
+                    if clause == 'contains' and clause == 'does not contain':
+                        val = clause.lower()
+                    else:
+                        val = float(reg.group(2))
 
                     if clause is not None and val is not None:
-                        if clause == "==" or clause == "=":
+                        if clause == "==" or clause == "=" or clause == 'contains':
                             cmpFun = self.equal_equal
                         elif clause == ">=":
                             cmpFun = self.greater_equal
@@ -86,6 +89,8 @@ class Monitor:
                             cmpFun = self.greater
                         elif clause == "<":
                             cmpFun = self.lesser
+                        elif clause == '!=' or clause == 'does not contain':
+                            cmpFun = self.not_equal
 
                 clausePara.append((cmpFun, val))
             self.funcList.append(clauseFuns)
@@ -120,6 +125,11 @@ class Monitor:
 
     # Start the Monitor and check what is the method of checking
     # The method returns true if the check satisfies the user's defined condition
+
+    @staticmethod
+    def not_equal(a,b):
+        return a != b
+
     @staticmethod
     def between(a, b):
         (f, l) = b

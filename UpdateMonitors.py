@@ -40,11 +40,14 @@ def update_api_list():
 
     for monitor_name in monitors.keys():
         vars_string = ''
-        for var in monitors[monitor_name].monitor_var:
+        for var in monitors[monitor_name].monitor_var.keys():
+            cur_monitor_type = monitors[monitor_name].monitor_var[var]
+            monitor_var_tuple = '(' + var + ',' + cur_monitor_type + ')'
             if vars_string == '':
-                vars_string += var
+                vars_string += monitor_var_tuple
             else:
-                vars_string = vars_string + ',' + var
+                vars_string = vars_string + ';' + monitor_var_tuple
+
         cursor.execute("INSERT IGNORE INTO monitors VALUES(%s, %s)", (monitor_name, vars_string))
 
     db.commit()

@@ -14,6 +14,8 @@ class Monitor:
             # check whether trigger is active or not
             active = self.serverIO.checkIfActive(self.trigger.trigger_id)
             result = False
+            # Adding a list to track all clause conditions that are actually met
+            clause_met = []
             for i in range(len(self.funcList)):
                 funClause = self.funcList[i]
                 paraClause = self.paraList[i]
@@ -22,11 +24,14 @@ class Monitor:
                     clauseResult = clauseResult and funClause[j](paraClause[j][0], paraClause[j][1])
                 result = result or clauseResult
 
+                if clauseResult:
+                    clause_met.append(self.trigger.condition[i])
+
             if result:
                 # if it is active sound alarm
                 if active == 1:
                     print(self.triggerId, 'Alert', sep=' ')
-                    self.serverIO.pushNotification(self.triggerId, self.trigger_owner, self.trigger)
+                    self.serverIO.pushNotification(self.triggerId, self.trigger_owner, self.trigger, clause_met)
                     # active = 0
             else:
                 # if not active switch back to active

@@ -82,15 +82,23 @@ class ServerIO:
 
     # Sanitize url to make it compatible to requests module
 
-    def pushNotification(self, triggerId, owner, trigger):
+    def pushNotification(self, triggerId, owner, trigger, clause_list):
 
         cursor = self.db.cursor()
 
+        # Adding all the conditions that are met into the pending_notifications
+        s = ""
+
+        for cl in clause_list:
+            for con in cl:
+                (comp, val) = con
+                s += str(comp) + str(val) + ","
+        s = s[:-1]
         cursor.execute("SELECT * FROM triggers where trigger_id = %s", (triggerId,))
 
         if cursor.fetchone() is not None:
             cursor.execute("INSERT IGNORE INTO pending_notifications VALUES (%s, %s, %s)",
-                           (str(triggerId), str(trigger.condition_string), str(owner)))
+                           (str(triggerId), str(s), str(owner)))
 
         self.db.commit()
 

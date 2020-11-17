@@ -1,13 +1,13 @@
 from Monitor import Monitor
 import requests
 
-monitor_var = ["Temp", "Weather"]
+monitor_var = ["Temp", "Humidity"]
 
 
 class WeatherMonitor(Monitor):
 
     def _mapper(self):
-        varToFuncMapping = {'Temp': self._temp_check, 'Weather':self._weather_check}
+        varToFuncMapping = {'Temp': self._temp_check, 'Humidity': self._humidity_check}
 
         return varToFuncMapping
 
@@ -29,14 +29,14 @@ class WeatherMonitor(Monitor):
             print('Access Denied')
             return True
 
-    def _weather_check(self, func, val):
+    def _humidity_check(self, func, val):
         try:
             r = requests.get("http://" + self.src)
             if r.status_code == 200:
                 try:
                     weather_json = r.json()
-                    temp = weather_json['weather'][0]['main'].lower()
-                    return func(temp, val)
+                    hum = weather_json['main']['humidity']
+                    return func(hum, val)
                 except KeyError as ke:
                     print("No key:", ke, sep=' ')
                     return True

@@ -34,6 +34,10 @@ def update_api_list():
 
     cursor = db.cursor()
 
+    # Modify the update monitors to accommodate possible change in UpdateMonitors
+    cursor.execute("DELETE FROM monitors")
+    db.commit()
+
     for monitor_name in monitors.keys():
         vars_string = ''
         for var in monitors[monitor_name].monitor_var:
@@ -49,3 +53,6 @@ def update_api_list():
 def update_monitors():
     import_monitors()
     update_api_list()
+
+# Users now are able to run UpdateMonitors.py separately
+update_monitors()

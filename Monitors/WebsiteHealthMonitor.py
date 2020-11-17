@@ -1,8 +1,9 @@
 import requests
 import pythonping
 from Monitor import Monitor
+import MonitorVarTypes
 
-monitor_var = ['StatusCode', 'Latency']
+monitor_var = {'StatusCode': MonitorVarTypes.NUM, 'Latency': MonitorVarTypes.NUM}
 
 
 class WebsiteHealthChecker(Monitor):

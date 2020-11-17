@@ -1,7 +1,8 @@
 from Monitor import Monitor
+import MonitorVarTypes
 import requests
 
-monitor_var = ["Temp", "Humidity"]
+monitor_var = {"Temp": MonitorVarTypes.NUM, "Humidity": MonitorVarTypes.NUM}
 
 
 class WeatherMonitor(Monitor):

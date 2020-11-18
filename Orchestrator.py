@@ -13,8 +13,6 @@ class Orchestrator:
         self.monitors = {}
         self.triggerIds = set([])
         self.serverIO = ServerIO()
-        with open("Monitors.json") as file:
-            self.monitorDic = json.load(file)
 
     def update_triggers(self):
         # add new triggers to current triggers in the system

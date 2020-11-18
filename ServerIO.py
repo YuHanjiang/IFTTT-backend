@@ -99,6 +99,11 @@ class ServerIO:
         s = s[:-1]
         cursor.execute("SELECT * FROM triggers where trigger_id = %s", (triggerId,))
 
+        # Without condition shows there is something wrong with the trigger
+        if s == "":
+            s = 'There is something wrong with your trigger testing. Please make sure you are creating the trigger as' \
+                'specified'
+
         if cursor.fetchone() is not None:
             cursor.execute("INSERT IGNORE INTO pending_notifications VALUES (%s, %s, %s)",
                            (str(triggerId), str(s), str(owner)))

@@ -30,7 +30,6 @@ class WebsiteHealthChecker(Monitor):
             a = r.rtt_avg_ms
             return func(float(a), val)
         except Exception as err:
-            print('Please check your ping check input:', self.triggerId, sep=' ')
             return True
 
 

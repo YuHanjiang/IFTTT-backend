@@ -18,16 +18,17 @@ class WeatherMonitor(Monitor):
             if r.status_code == 200:
                 try:
                     weather_json = r.json()
-                    temp = float(weather_json['main']['temp'])
-                    return func(temp, val)
+                    if 'main' in weather_json and 'temp' in weather_json['main']:
+                        temp = float(weather_json['main']['temp'])
+                        return func(temp, val)
+                    else:
+                        return True
                 except Exception as ke:
-                    print("Please check your source:", self.triggerId, sep=' ')
                     return True
             else:
                 return True
 
         except requests.exceptions.RequestException as err:
-            print('Access Denied ', self.triggerId)
             return True
 
     def _humidity_check(self, func, val):
@@ -36,16 +37,18 @@ class WeatherMonitor(Monitor):
             if r.status_code == 200:
                 try:
                     weather_json = r.json()
-                    hum = weather_json['main']['humidity']
-                    return func(hum, val)
+                    if 'main' in weather_json and 'humidity' in weather_json['main']:
+                        hum = weather_json['main']['humidity']
+                        return func(hum, val)
+                    else:
+                        return True
+
                 except Exception as ke:
-                    print("Please check your source:", self.triggerId, sep=' ')
                     return True
             else:
                 return True
 
         except requests.exceptions.RequestException as err:
-            print('Access Denied ', self.triggerId)
             return True
 
 

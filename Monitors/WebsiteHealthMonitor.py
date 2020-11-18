@@ -17,17 +17,21 @@ class WebsiteHealthChecker(Monitor):
         try:
             r = requests.get('http://' + self.src)
 
-        except requests.exceptions.RequestException as err:
+        except Exception as err:
             print(self.src)
-            print('Access Denied')
+            print('Access Denied:', self.triggerId, sep=' ')
             return True
 
         return func(int(r.status_code), val)
 
     def _ping_check(self, func, val):
-        r = pythonping.ping(self.src, size=50)
-        a = r.rtt_avg_ms
-        return func(float(a), val)
+        try:
+            r = pythonping.ping(self.src, size=50)
+            a = r.rtt_avg_ms
+            return func(float(a), val)
+        except Exception as err:
+            print('Please check your ping check input:', self.triggerId, sep=' ')
+            return True
 
 
 def start(trigger):

@@ -21,13 +21,13 @@ class WeatherMonitor(Monitor):
                     temp = float(weather_json['main']['temp'])
                     return func(temp, val)
                 except Exception as ke:
-                    print("Please check your source:", ke, sep=' ')
+                    print("Please check your source:", self.triggerId, sep=' ')
                     return True
             else:
                 return True
 
         except requests.exceptions.RequestException as err:
-            print('Access Denied')
+            print('Access Denied ', self.triggerId)
             return True
 
     def _humidity_check(self, func, val):
@@ -39,13 +39,13 @@ class WeatherMonitor(Monitor):
                     hum = weather_json['main']['humidity']
                     return func(hum, val)
                 except Exception as ke:
-                    print("Please check your source:", ke, sep=' ')
+                    print("Please check your source:", self.triggerId, sep=' ')
                     return True
             else:
                 return True
 
         except requests.exceptions.RequestException as err:
-            print('Access Denied')
+            print('Access Denied ', self.triggerId)
             return True
 
 

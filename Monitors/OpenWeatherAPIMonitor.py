@@ -2,7 +2,7 @@ from Monitor import Monitor
 import MonitorVarTypes
 import requests
 
-monitor_var = {"Temp": MonitorVarTypes.NUM, "Humidity": MonitorVarTypes.NUM}
+monitor_var = {"Temp": MonitorVarTypes.FLOAT, "Humidity": MonitorVarTypes.FLOAT}
 
 
 class WeatherMonitor(Monitor):

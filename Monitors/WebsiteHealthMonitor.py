@@ -3,7 +3,7 @@ import pythonping
 from Monitor import Monitor
 import MonitorVarTypes
 
-monitor_var = {'StatusCode': MonitorVarTypes.NUM, 'Latency': MonitorVarTypes.NUM}
+monitor_var = {'StatusCode': MonitorVarTypes.INT, 'Latency': MonitorVarTypes.FLOAT}
 
 
 class WebsiteHealthChecker(Monitor):

@@ -1,2 +1,3 @@
-NUM = "num"
-STRING = "str"
+INT = "int"
+STRING = "string"
+FLOAT = "float"

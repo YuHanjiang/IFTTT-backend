@@ -75,8 +75,11 @@ class ServerIO:
                     trigger_list.append(trigger)
 
         remove_triggers = [t_id for t_id in triggerIds if t_id not in read_in_triggerId]
-
-        print('Triggers Loaded')
+        new_trigger_ids = [t.trigger_id for t in trigger_list if t.trigger_id not in triggerIds]
+        if len(new_trigger_ids) > 0:
+            print('New Triggers: ', new_trigger_ids)
+        if len(remove_triggers) > 0:
+            print('Remove Triggers: ', remove_triggers)
         # time.sleep(10) 
         return trigger_list, remove_triggers
 

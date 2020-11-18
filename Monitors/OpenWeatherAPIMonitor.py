@@ -20,8 +20,8 @@ class WeatherMonitor(Monitor):
                     weather_json = r.json()
                     temp = float(weather_json['main']['temp'])
                     return func(temp, val)
-                except KeyError as ke:
-                    print("No key:", ke, sep=' ')
+                except Exception as ke:
+                    print("Please check your source:", ke, sep=' ')
                     return True
             else:
                 return True
@@ -38,8 +38,8 @@ class WeatherMonitor(Monitor):
                     weather_json = r.json()
                     hum = weather_json['main']['humidity']
                     return func(hum, val)
-                except KeyError as ke:
-                    print("No key:", ke, sep=' ')
+                except Exception as ke:
+                    print("Please check your source:", ke, sep=' ')
                     return True
             else:
                 return True

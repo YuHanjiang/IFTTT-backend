@@ -2,7 +2,6 @@ import threading
 from ServerIO import ServerIO
 import UpdateMonitors
 import time
-import json
 
 defined_monitors = {}
 
@@ -21,6 +20,7 @@ class Orchestrator:
         for trigger in self.triggers:
             self.triggerIds.add(trigger.trigger_id)
         to_remove = []
+
         for trigger in self.triggers:
             if trigger.trigger_id in remove_triggers:
                 trigger.terminated = True
@@ -28,6 +28,7 @@ class Orchestrator:
 
         for t in to_remove:
             self.triggers.remove(t)
+            self.triggerIds.remove(t.trigger_id)
 
         for rm_t in remove_triggers:
             self.monitors[rm_t] = None
@@ -46,7 +47,7 @@ class Orchestrator:
         while True:
             self.update_triggers()
             self.initialize_monitors()
-            time.sleep(10)
+            time.sleep(5)
 
 
 def __main__():

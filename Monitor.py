@@ -35,9 +35,11 @@ class Monitor:
                     # active = 0
             else:
                 # if not active switch back to active
-                if active == 0:
+                if active == 0 and self.trigger.previous_result is True:
                     self.serverIO.setBackToActive(self.triggerId)
                 print(self.triggerId, 'Passed', sep=' ')
+
+            self.trigger.previous_result = result
             time.sleep(self.interval)
 
     def __init__(self, trigger):

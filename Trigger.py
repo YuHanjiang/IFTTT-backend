@@ -10,4 +10,5 @@ class Trigger:
         self.condition_string = condition_string  
         self.interval = interval
         self.hasMonitor = False
+        self.previous_result = False
         self.terminated = False

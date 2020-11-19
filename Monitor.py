@@ -32,19 +32,20 @@ class Monitor:
                 if active == 1:
                     print(self.triggerId, 'Alert', sep=' ')
                     self.serverIO.pushNotification(self.triggerId, self.trigger_owner, self.trigger, clause_met)
+                    self.need_to_change_status = True
                     # active = 0
             else:
                 # if not active switch back to active
-                if active == 0 and self.trigger.previous_result is True:
+                if active == 0 and self.need_to_change_status is True:
                     self.serverIO.setBackToActive(self.triggerId)
+                    self.need_to_change_status = False
                 print(self.triggerId, 'Passed', sep=' ')
-
-            self.trigger.previous_result = result
             time.sleep(self.interval)
 
     def __init__(self, trigger):
         self.conditionMet = False
         self.serverIO = ServerIO()
+        self.need_to_change_status = False
 
         if trigger is not None:
             self.trigger = trigger
@@ -129,7 +130,7 @@ class Monitor:
     # The method returns true if the check satisfies the user's defined condition
 
     @staticmethod
-    def not_equal(a,b):
+    def not_equal(a, b):
         return a != b
 
     @staticmethod

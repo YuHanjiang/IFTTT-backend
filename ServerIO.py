@@ -113,8 +113,10 @@ class ServerIO:
 
         # Send HTTP request to the api to notify trigger addition
         try:
-            r = requests.post('http://vocation.cs.umd.edu/flask/api/trigger_added', data={'trigger_id': triggerId},
-                              json={'trigger_id': triggerId})
+            send_json = json.dumps({'trigger_id': triggerId})
+            r = requests.post('http://vocation.cs.umd.edu/flask/api/trigger_added', json=send_json)
+            print(r.json())
+            print(r.status_code)
         except requests.exceptions.RequestException as e:
             print('Contact the API.')
 

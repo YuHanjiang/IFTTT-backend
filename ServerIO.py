@@ -2,6 +2,7 @@ import mysql.connector
 import re
 from Trigger import Trigger
 import json
+import requests
 
 
 def sanitize_url(url):
@@ -109,6 +110,12 @@ class ServerIO:
                            (str(triggerId), str(s), str(owner)))
 
         self.db.commit()
+
+        # Send HTTP request to the api to notify trigger addition
+        try:
+            r = requests.post('http://vocation.cs.umd.edu/flask/api/trigger_added', data={'main':'Trigger Notified'})
+        except requests.exceptions.RequestException as e:
+            print('Contact the API.')
 
         print("added " + str(triggerId) + " to pending table")
 

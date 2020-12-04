@@ -29,23 +29,23 @@ class Monitor:
 
             if result:
                 # if it is active sound alarm
-                if active == 1 and self.alarm_sounded is False:
+                if active == 1:
                     print(self.triggerId, 'Alert', sep=' ')
                     self.serverIO.pushNotification(self.triggerId, self.trigger_owner, self.trigger, clause_met)
-                    self.alarm_sounded = True
+                    # self.alarm_sounded = True
                     # active = 0
-            else:
-                # if not active switch back to active
-                if active == 0 and self.alarm_sounded is True:
-                    self.serverIO.setBackToActive(self.triggerId)
-                    self.alarm_sounded = False
-                print(self.triggerId, 'Passed', sep=' ')
+            # else:
+            #     # if not active switch back to active
+            #     if active == 0 and self.alarm_sounded is True:
+            #         self.serverIO.setBackToActive(self.triggerId)
+            #         self.alarm_sounded = False
+            #     print(self.triggerId, 'Passed', sep=' ')
             time.sleep(self.interval)
 
     def __init__(self, trigger):
         self.conditionMet = False
         self.serverIO = ServerIO()
-        self.alarm_sounded = False
+        # self.alarm_sounded = False
 
         if trigger is not None:
             self.trigger = trigger

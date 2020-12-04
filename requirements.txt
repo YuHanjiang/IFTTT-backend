@@ -2,4 +2,3 @@ requests~=2.25.0
 pythonping~=1.0.15
 mysql-connector-python~=8.0.22
 importlib~=1.0.4
-glob3

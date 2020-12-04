@@ -20,9 +20,8 @@ class WeatherMonitor(Monitor):
                 if 'main' in weather_json and 'temp' in weather_json['main']:
                     temp = float(weather_json['main']['temp'])
                     return func(temp, val)
-        except requests.exceptions.RequestException as err:
-            self.trigger.terminated = True
-            return True
+        except Exception:
+            raise ValueError
 
     def _humidity_check(self, func, val):
         try:
@@ -33,13 +32,8 @@ class WeatherMonitor(Monitor):
                     hum = weather_json['main']['humidity']
                     return func(hum, val)
 
-        except requests.exceptions.RequestException as err:
-            self.trigger.terminated = True
-            return True
-
-        except KeyError as key_err:
-            print('Json Key Error: ', self.triggerId)
-            return True
+        except Exception:
+            raise ValueError
 
 
 def start(trigger):

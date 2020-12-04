@@ -19,9 +19,7 @@ class PolygonStockAPIMonitor(Monitor):
                 return func(closing_price, val)
 
         except Exception as err:
-            self.trigger.terminated = True
-            print('URL Error: ', self.triggerId)
-            return True
+            raise ValueError
 
 
 def start(trigger):

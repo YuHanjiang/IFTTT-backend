@@ -17,10 +17,8 @@ class WebsiteHealthChecker(Monitor):
         try:
             r = requests.get('http://' + self.src)
 
-        except Exception as err:
-            print(self.src)
-            print('Access Denied:', self.triggerId, sep=' ')
-            return True
+        except Exception:
+            raise ValueError
 
         return func(int(r.status_code), val)
 
@@ -29,8 +27,8 @@ class WebsiteHealthChecker(Monitor):
             r = pythonping.ping(self.src, size=50)
             a = r.rtt_avg_ms
             return func(float(a), val)
-        except Exception as err:
-            return True
+        except Exception:
+            raise ValueError
 
 
 def start(trigger):

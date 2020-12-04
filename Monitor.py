@@ -21,7 +21,15 @@ class Monitor:
                 paraClause = self.paraList[i]
                 clauseResult = True
                 for j in range(len(funClause)):
-                    clauseResult = clauseResult and funClause[j](paraClause[j][0], paraClause[j][1])
+                    try:
+                        clauseResult = clauseResult and funClause[j](paraClause[j][0], paraClause[j][1])
+
+                    # Handling url error
+                    except ValueError:
+                        self.trigger.terminated = True
+                        print('URL Error: ', self.triggerId)
+                        self.serverIO.pushNotification(self.triggerId, self.trigger_owner, self.trigger, 'URL Error')
+                        return
                 result = result or clauseResult
 
                 if clauseResult:

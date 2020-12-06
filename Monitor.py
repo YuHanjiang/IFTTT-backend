@@ -51,7 +51,8 @@ class Monitor:
             self.src = trigger.src
             self.conditions = trigger.condition
             self.trigger_owner = trigger.owner
-            self.interval = trigger.interval
+            self.interval = trigger.interval 
+            self.port = trigger.port
 
         self.funcList = []
         self.paraList = []

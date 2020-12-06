@@ -41,7 +41,7 @@ class ServerIO:
 
         # Getting the trigger_query
         for t in trigger_query:
-            (name, monitor_type, severity, url, message, trigger_id, condition, owner, active, interval) = t
+            (name, monitor_type, severity, url, message, trigger_id, condition, owner, active, interval, port) = t
             read_in_triggerId.append(trigger_id)
 
             # dont add triggers that are already in the system
@@ -71,7 +71,7 @@ class ServerIO:
 
                     url = sanitize_url(url)
                     trigger = Trigger(trigger_id, url, monitor_type, condition_list, severity, owner,
-                                      condition, interval)
+                                      condition, interval, port)
 
                     trigger_list.append(trigger)
 

@@ -12,7 +12,7 @@ class Monitor:
         self._dicParser()
         while not self.trigger.terminated:
             # check whether trigger is active or not
-            active = self.serverIO.checkIfActive(self.trigger.trigger_id)
+            active = int(self.serverIO.checkIfActive(self.trigger.trigger_id))
             result = False
             # Adding a list to track all clause conditions that are actually met
             clause_met = []

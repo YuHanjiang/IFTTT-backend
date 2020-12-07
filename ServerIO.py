@@ -36,7 +36,7 @@ class ServerIO:
 
         cursor.execute('SELECT * FROM triggers')
 
-        trigger_query = cursor.fetchall() 
+        trigger_query = cursor.fetchall()
         self.db.commit()
 
         # Getting the trigger_query
@@ -71,7 +71,7 @@ class ServerIO:
 
                     url = sanitize_url(url)
                     trigger = Trigger(trigger_id, url, monitor_type, condition_list, severity, owner,
-                                      condition, interval, port)
+                                      condition, interval, port, message)
 
                     trigger_list.append(trigger)
 
@@ -106,18 +106,42 @@ class ServerIO:
                 'specified'
 
         if cursor.fetchone() is not None:
-            cursor.execute("INSERT IGNORE INTO pending_notifications VALUES (%s, %s, %s)",
-                           (str(triggerId), str(s), str(owner)))
+            # cursor.execute("INSERT IGNORE INTO pending_notifications VALUES (%s, %s, %s)",
+            #                (str(triggerId), str(s), str(owner)))
+            cursor.execute('SELECT token FROM users where token is not null')
+
+            token = cursor.fetchone()
+            if token is not None:
+                try:
+                    header_dict = {
+                        'Content-Type': 'application/json',
+                        'Authorization':
+                            'key=AAAAtogJsGA:APA91bFlqRyTKH4zT1XOZt_RvWiXvzUhYJe3yoknalCI38S5RPsgu-RMXiAREKwnvZsnqDs8za_ECrTBzgT7lac2u17UP-0MKoJZyUX8pAFHcw8YhLI9g-TRcVS-71eXIVkUGE1H0Or6'
+                    }
+                    to_send = {
+                        "to": str(token),
+                        "collapse_key": "type_a",
+                        "notification": {
+                            "body": str(trigger.message),
+                            "title": "IFTTT Trigger Notification"
+                        },
+                        "data": {
+                            "body": str(s),
+                            "title": "IFTTT Trigger Notification"
+                        }
+                    }
+                    r = requests.post('https://fcm.googleapis.com/fcm/send', headers=header_dict, json=to_send)
+                    print("Send Post Requests to FCM")
+                except requests.exceptions.RequestException:
+                    print('Contact API')
 
         self.db.commit()
 
         # Send HTTP request to the api to notify trigger addition
-        try:
-            r = requests.post('http://vocation.cs.umd.edu/flask/api/trigger_added', json={"trigger_id": str(triggerId)})
-        except requests.exceptions.RequestException as e:
-            print('Contact the API.')
-
-        print("added " + str(triggerId) + " to pending table")
+        # try:
+        #     r = requests.post('http://vocation.cs.umd.edu/flask/api/trigger_added', json={"trigger_id": str(triggerId)})
+        # except requests.exceptions.RequestException as e:
+        #     print('Contact the API.')
 
     def checkIfActive(self, triggerID):
 

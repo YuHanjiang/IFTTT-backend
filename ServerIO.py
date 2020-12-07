@@ -126,7 +126,8 @@ class ServerIO:
                             "title": "IFTTT Trigger Notification"
                         },
                         "data": {
-                            "body": str(s),
+                            "trigger_id": str(triggerId),
+                            "conditions_met": str(s),
                             "title": "IFTTT Trigger Notification"
                         }
                     }

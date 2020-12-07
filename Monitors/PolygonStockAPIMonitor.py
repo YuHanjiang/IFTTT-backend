@@ -2,13 +2,13 @@ from Monitor import Monitor
 import MonitorVarTypes
 import requests
 
-monitor_var = {'Previous Closing Price': MonitorVarTypes.FLOAT}
+monitor_var = {'PreviousClosingPrice': MonitorVarTypes.FLOAT}
 
 
 class PolygonStockAPIMonitor(Monitor):
 
     def _mapper(self):
-        return {'Previous Closing Price': self._price_check}
+        return {'PreviousClosingPrice': self._price_check}
 
     def _price_check(self, func, val):
         try:
@@ -18,7 +18,7 @@ class PolygonStockAPIMonitor(Monitor):
                 closing_price = stock_json['results'][0]['c']
                 return func(closing_price, val)
 
-        except Exception as err:
+        except Exception:
             raise ValueError
 
 

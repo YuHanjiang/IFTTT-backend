@@ -110,7 +110,7 @@ class ServerIO:
             #                (str(triggerId), str(s), str(owner)))
             cursor.execute('SELECT token FROM users where token is not null')
 
-            token = cursor.fetchone()
+            token = cursor.fetchall()
             if token is not None:
                 try:
                     header_dict = {
@@ -119,7 +119,7 @@ class ServerIO:
                             'key=AAAAtogJsGA:APA91bFlqRyTKH4zT1XOZt_RvWiXvzUhYJe3yoknalCI38S5RPsgu-RMXiAREKwnvZsnqDs8za_ECrTBzgT7lac2u17UP-0MKoJZyUX8pAFHcw8YhLI9g-TRcVS-71eXIVkUGE1H0Or6'
                     }
                     to_send = {
-                        "to": str(token),
+                        "to": str(token[0][0]),
                         "collapse_key": "type_a",
                         "notification": {
                             "body": str(trigger.message),
@@ -134,8 +134,6 @@ class ServerIO:
                     print("Send Post Requests to FCM")
                 except requests.exceptions.RequestException:
                     print('Contact API')
-
-        self.db.commit()
 
         # Send HTTP request to the api to notify trigger addition
         # try:

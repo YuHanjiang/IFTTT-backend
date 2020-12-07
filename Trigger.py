@@ -1,15 +1,15 @@
 class Trigger:
 
-    def __init__(self, trigger_id, src, monitor, condition, severity, owner, condition_string, interval, port):
+    def __init__(self, trigger_id, src, monitor, condition, severity, owner, condition_string, interval, port, message):
         self.trigger_id = trigger_id
         self.src = src
         self.condition = condition
         self.severity = severity
         self.monitor = monitor
         self.owner = owner
-        self.condition_string = condition_string  
+        self.condition_string = condition_string
         self.interval = interval
         self.port = port
         self.hasMonitor = False
-        self.terminated = False 
-        
+        self.terminated = False
+        self.message = message

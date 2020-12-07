@@ -3,6 +3,7 @@ import re
 from Trigger import Trigger
 import json
 import requests
+from datetime import datetime
 
 
 def sanitize_url(url):
@@ -113,6 +114,9 @@ class ServerIO:
             token = cursor.fetchall()
             if token is not None:
                 try:
+                    now = datetime.now()
+                    dt_string = now.strftime('%d/%m/%Y')
+                    tm_string = now.strftime('%H:%M:%S')
                     header_dict = {
                         'Content-Type': 'application/json',
                         'Authorization':
@@ -126,6 +130,8 @@ class ServerIO:
                             "title": "IFTTT Trigger Notification"
                         },
                         "data": {
+                            "trigger_date": str(dt_string),
+                            "trigger_time": str(tm_string),
                             "trigger_id": str(triggerId),
                             "conditions_met": str(s),
                             "title": "IFTTT Trigger Notification"

@@ -135,7 +135,8 @@ class ServerIO:
                             "trigger_time": str(tm_string),
                             "trigger_id": str(triggerId),
                             "conditions_met": str(s),
-                            "title": "IFTTT Trigger Notification"
+                            "title": "IFTTT Trigger Notification",
+                            "severity": str(trigger.severity)
                         }
                     }
                     active = int(self.checkIfActive(triggerId))

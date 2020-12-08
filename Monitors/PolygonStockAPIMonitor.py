@@ -2,7 +2,8 @@ from Monitor import Monitor
 import MonitorVarTypes
 import requests
 
-monitor_var = {'PreviousClosingPrice': MonitorVarTypes.FLOAT}
+monitor_var = {'PreviousClosingPrice': MonitorVarTypes.FLOAT} 
+monitor_text = "URL FORMAT: https://api.polygon.io/v2/aggs/ticker/{TICKER}/prev?apiKey={APIKEY}; \nGo to https://polygon.io/docs/get_v1_meta_symbols__stocksTicker__news_anchor for more info"
 
 
 class PolygonStockAPIMonitor(Monitor):

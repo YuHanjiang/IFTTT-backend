@@ -2,7 +2,8 @@ from Monitor import Monitor
 import MonitorVarTypes
 import requests
 
-monitor_var = {"Temp": MonitorVarTypes.FLOAT, "Humidity": MonitorVarTypes.FLOAT}
+monitor_var = {"Temp": MonitorVarTypes.FLOAT, "Humidity": MonitorVarTypes.FLOAT} 
+monitor_text = "URL FORMAT: api.openweathermap.org/data/2.5/weather?q={city name}&appid={API key}; Go to https://openweathermap.org/current for more info."
 
 
 class WeatherMonitor(Monitor):

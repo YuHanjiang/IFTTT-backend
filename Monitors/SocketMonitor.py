@@ -2,7 +2,8 @@ from Monitor import Monitor
 import MonitorVarTypes
 import socket  
 
-monitor_var = {"Connection": MonitorVarTypes.INT} 
+monitor_var = {"Connection": MonitorVarTypes.INT}  
+monitor_text = "URL FORMAT: www.{WEBSITE.com}; \nPort Number also required."
 
 class SocketMonitor(Monitor):  
 

@@ -122,23 +122,41 @@ class ServerIO:
                         'Authorization':
                             'key=AAAAtogJsGA:APA91bFlqRyTKH4zT1XOZt_RvWiXvzUhYJe3yoknalCI38S5RPsgu-RMXiAREKwnvZsnqDs8za_ECrTBzgT7lac2u17UP-0MKoJZyUX8pAFHcw8YhLI9g-TRcVS-71eXIVkUGE1H0Or6'
                     }
-                    to_send = {
-                        "to": str(token[0][0]),
-                        "collapse_key": "type_a",
-                        "notification": {
-                            "body": str(trigger.message),
-                            "title": "IFTTT Trigger Notification",
-                            "sound": "default"
-                        },
-                        "data": {
-                            "trigger_date": str(dt_string),
-                            "trigger_time": str(tm_string),
-                            "trigger_id": str(triggerId),
-                            "conditions_met": str(s),
-                            "title": "IFTTT Trigger Notification",
-                            "severity": str(trigger.severity)
+                    if int(trigger.severity) == 1:
+                        to_send = {
+                            "to": str(token[0][0]),
+                            "collapse_key": "type_a",
+                            "notification": {
+                                "body": str(trigger.message),
+                                "title": "IFTTT Trigger Notification"
+                            },
+                            "data": {
+                                "trigger_date": str(dt_string),
+                                "trigger_time": str(tm_string),
+                                "trigger_id": str(triggerId),
+                                "conditions_met": str(s),
+                                "title": "IFTTT Trigger Notification",
+                                "severity": str(trigger.severity)
+                            }
                         }
-                    }
+                    else:
+                        to_send = {
+                            "to": str(token[0][0]),
+                            "collapse_key": "type_a",
+                            "notification": {
+                                "body": str(trigger.message),
+                                "title": "IFTTT Trigger Notification",
+                                "sound": "default"
+                            },
+                            "data": {
+                                "trigger_date": str(dt_string),
+                                "trigger_time": str(tm_string),
+                                "trigger_id": str(triggerId),
+                                "conditions_met": str(s),
+                                "title": "IFTTT Trigger Notification",
+                                "severity": str(trigger.severity)
+                            }
+                        }
                     active = int(self.checkIfActive(triggerId))
                     if active:
                         r = requests.post('https://fcm.googleapis.com/fcm/send', headers=header_dict, json=to_send)

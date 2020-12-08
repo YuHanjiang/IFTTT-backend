@@ -4,3 +4,4 @@
 /.idea/
 *.pyc
 Monitors/__pycache__
+.vscode/

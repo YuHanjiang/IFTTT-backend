@@ -109,7 +109,7 @@ class ServerIO:
         if cursor.fetchone() is not None:
             # cursor.execute("INSERT IGNORE INTO pending_notifications VALUES (%s, %s, %s)",
             #                (str(triggerId), str(s), str(owner)))
-            cursor.execute('SELECT token FROM users where token is not null')
+            cursor.execute('SELECT token FROM users = %s where token is not null', (trigger.owner))
 
             token = cursor.fetchall()
             if token is not None:

@@ -137,7 +137,7 @@ class ServerIO:
                             "title": "IFTTT Trigger Notification"
                         }
                     }
-                    active = self.checkIfActive(trigger)
+                    active = int(self.checkIfActive(trigger))
                     if active:
                         r = requests.post('https://fcm.googleapis.com/fcm/send', headers=header_dict, json=to_send)
                         print("Send Post Requests to FCM")

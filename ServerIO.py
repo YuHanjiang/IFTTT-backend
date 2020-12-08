@@ -127,7 +127,8 @@ class ServerIO:
                         "collapse_key": "type_a",
                         "notification": {
                             "body": str(trigger.message),
-                            "title": "IFTTT Trigger Notification"
+                            "title": "IFTTT Trigger Notification",
+                            "sound": "default"
                         },
                         "data": {
                             "trigger_date": str(dt_string),
@@ -137,7 +138,7 @@ class ServerIO:
                             "title": "IFTTT Trigger Notification"
                         }
                     }
-                    active = int(self.checkIfActive(trigger))
+                    active = int(self.checkIfActive(triggerId))
                     if active:
                         r = requests.post('https://fcm.googleapis.com/fcm/send', headers=header_dict, json=to_send)
                         print("Send Post Requests to FCM")

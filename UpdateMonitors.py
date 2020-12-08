@@ -46,9 +46,10 @@ def update_api_list():
             if vars_string == '':
                 vars_string += monitor_var_tuple
             else:
-                vars_string = vars_string + ',' + monitor_var_tuple
+                vars_string = vars_string + ',' + monitor_var_tuple 
+        mont_text = monitors[monitor_name].monitor_text
 
-        cursor.execute("INSERT IGNORE INTO monitors VALUES(%s, %s)", (monitor_name, vars_string))
+        cursor.execute("INSERT IGNORE INTO monitors VALUES(%s, %s, %s)", (monitor_name, vars_string, mont_text))
 
     db.commit()
 

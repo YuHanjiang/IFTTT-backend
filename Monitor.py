@@ -28,7 +28,7 @@ class Monitor:
                     except ValueError:
                         self.trigger.terminated = True
                         print('URL Error: ', self.triggerId)
-                        self.serverIO.pushNotification(self.triggerId, self.trigger_owner, self.trigger, 'URL Error')
+                        self.serverIO.pushNotification(self.trigger, 'URL Error')
                         return
                 result = result or clauseResult
 
@@ -39,7 +39,7 @@ class Monitor:
                 # if it is active sound alarm
                 if active == 1:
                     print(self.triggerId, 'Alert', sep=' ')
-                    self.serverIO.pushNotification(self.triggerId, self.trigger_owner, self.trigger, clause_met)
+                    self.serverIO.pushNotification(self.trigger, clause_met)
                     self.need_to_change_status = True
                     # active = 0
             else:

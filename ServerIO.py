@@ -87,7 +87,7 @@ class ServerIO:
 
     # Sanitize url to make it compatible to requests module
 
-    def pushNotification(self, triggerId, owner, trigger, clause_list):
+    def pushNotification(self, trigger, clause_list):
 
         cursor = self.db.cursor()
 
@@ -99,7 +99,7 @@ class ServerIO:
                 (comp, val) = con
                 s += str(comp) + str(val) + ","
         s = s[:-1]
-        cursor.execute("SELECT * FROM triggers where trigger_id = %s", (triggerId,))
+        cursor.execute("SELECT * FROM triggers where trigger_id = %s", (trigger.trigger_id,))
 
         # Without condition shows there is something wrong with the trigger
         if s == "":
@@ -113,62 +113,79 @@ class ServerIO:
 
             token = cursor.fetchall()
             if token is not None:
-                try:
-                    now = datetime.now()
-                    dt_string = now.strftime('%d/%m/%Y')
-                    tm_string = now.strftime('%H:%M:%S')
-                    header_dict = {
-                        'Content-Type': 'application/json',
-                        'Authorization':
-                            'key=AAAAtogJsGA:APA91bFlqRyTKH4zT1XOZt_RvWiXvzUhYJe3yoknalCI38S5RPsgu-RMXiAREKwnvZsnqDs8za_ECrTBzgT7lac2u17UP-0MKoJZyUX8pAFHcw8YhLI9g-TRcVS-71eXIVkUGE1H0Or6'
-                    }
-                    if int(trigger.severity) == 1:
-                        to_send = {
-                            "to": str(token[0][0]),
-                            "collapse_key": "type_a",
-                            "notification": {
-                                "body": str(trigger.message),
-                                "title": "IFTTT Trigger Notification"
-                            },
-                            "data": {
-                                "trigger_date": str(dt_string),
-                                "trigger_time": str(tm_string),
-                                "trigger_id": str(triggerId),
-                                "conditions_met": str(s),
-                                "title": "IFTTT Trigger Notification",
-                                "severity": str(trigger.severity)
-                            }
-                        }
-                    else:
-                        to_send = {
-                            "to": str(token[0][0]),
-                            "collapse_key": "type_a",
-                            "notification": {
-                                "body": str(trigger.message),
-                                "title": "IFTTT Trigger Notification",
-                                "sound": "default"
-                            },
-                            "data": {
-                                "trigger_date": str(dt_string),
-                                "trigger_time": str(tm_string),
-                                "trigger_id": str(triggerId),
-                                "conditions_met": str(s),
-                                "title": "IFTTT Trigger Notification",
-                                "severity": str(trigger.severity)
-                            }
-                        }
-                    active = int(self.checkIfActive(triggerId))
-                    if active:
-                        r = requests.post('https://fcm.googleapis.com/fcm/send', headers=header_dict, json=to_send)
-                        print("Send Post Requests to FCM")
-                except requests.exceptions.RequestException:
-                    print('Contact API')
 
-        # Send HTTP request to the api to notify trigger addition
-        # try:
-        #     r = requests.post('http://vocation.cs.umd.edu/flask/api/trigger_added', json={"trigger_id": str(triggerId)})
-        # except requests.exceptions.RequestException as e:
-        #     print('Contact the API.')
+                cursor.execute('SELECT os FROM users where os is not null and users.username = %s', (trigger.owner,))
+                os = cursor.fetchall()
+                if os is not None:
+                    self.send_fcm_notification(trigger, token, os, s)
+
+    def send_fcm_notification(self, trigger, token, os, clause_string):
+        try:
+            now = datetime.now()
+            dt_string = now.strftime('%d/%m/%Y')
+            tm_string = now.strftime('%H:%M:%S')
+            os_string = os[0][0]
+            to_send = None
+            header_dict = {
+                'Content-Type': 'application/json',
+                'Authorization':
+                    'key=AAAAtogJsGA:APA91bFlqRyTKH4zT1XOZt_RvWiXvzUhYJe3yoknalCI38S5RPsgu-RMXiAREKwnvZsnqDs8za_ECrTBzgT7lac2u17UP-0MKoJZyUX8pAFHcw8YhLI9g-TRcVS-71eXIVkUGE1H0Or6'
+            }
+            if os_string == 'ios':
+                if int(trigger.severity) == 1:
+                    to_send = {
+                        "to": str(token[0][0]),
+                        "collapse_key": "type_a",
+                        "notification": {
+                            "body": str(trigger.message),
+                            "title": "IFTTT Trigger Notification"
+                        },
+                        "data": {
+                            "trigger_date": str(dt_string),
+                            "trigger_time": str(tm_string),
+                            "trigger_id": str(trigger.trigger_id),
+                            "conditions_met": str(clause_string),
+                            "title": "IFTTT Trigger Notification",
+                            "severity": str(trigger.severity)
+                        }
+                    }
+                else:
+                    to_send = {
+                        "to": str(token[0][0]),
+                        "collapse_key": "type_a",
+                        "notification": {
+                            "body": str(trigger.message),
+                            "title": "IFTTT Trigger Notification",
+                            "sound": "default"
+                        },
+                        "data": {
+                            "trigger_date": str(dt_string),
+                            "trigger_time": str(tm_string),
+                            "trigger_id": str(trigger.trigger_id),
+                            "conditions_met": str(clause_string),
+                            "title": "IFTTT Trigger Notification",
+                            "severity": str(trigger.severity)
+                        }
+                    }
+            elif os_string == 'android':
+                to_send = {
+                    "to": str(token[0][0]),
+                    "collapse_key": "type_a",
+                    "data": {
+                        "trigger_date": str(dt_string),
+                        "trigger_time": str(tm_string),
+                        "trigger_id": str(trigger.trigger_id),
+                        "conditions_met": str(clause_string),
+                        "title": "IFTTT Trigger Notification",
+                        "severity": str(trigger.severity)
+                    }
+                }
+            active = int(self.checkIfActive(trigger.trigger_id))
+            if active and to_send is not None:
+                requests.post('https://fcm.googleapis.com/fcm/send', headers=header_dict, json=to_send)
+                print("Send ", trigger.trigger_id," Post Requests to FCM")
+        except requests.exceptions.RequestException:
+            print('Contact API')
 
     def checkIfActive(self, triggerID):
 

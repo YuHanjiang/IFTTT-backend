@@ -177,7 +177,8 @@ class ServerIO:
                         "trigger_id": str(trigger.trigger_id),
                         "conditions_met": str(clause_string),
                         "title": "IFTTT Trigger Notification",
-                        "severity": str(trigger.severity)
+                        "severity": str(trigger.severity),
+                        "priority": "high"
                     }
                 }
             active = int(self.checkIfActive(trigger.trigger_id))

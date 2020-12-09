@@ -178,8 +178,7 @@ class ServerIO:
                         "conditions_met": str(clause_string),
                         "title": "IFTTT Trigger Notification",
                         "severity": str(trigger.severity)
-                    },
-                    "priority": "high"
+                    }
                 }
             active = int(self.checkIfActive(trigger.trigger_id))
             if active and to_send is not None:

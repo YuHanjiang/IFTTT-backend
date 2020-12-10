@@ -109,7 +109,6 @@ class ServerIO:
                 cursor.execute('SELECT os FROM users where os is not null and users.username = %s', (trigger.owner,))
                 os = cursor.fetchall()
                 if os is not None:
-                    print(s)
                     self.send_fcm_notification(trigger, token, os, s)
 
     def send_fcm_notification(self, trigger, token, os, clause_string):

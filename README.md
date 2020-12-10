@@ -8,7 +8,10 @@ Python 3
 
 1. Download the IFTTT backend service repo from https://github.com/YuHanjiang/IFTTT-backend.git
 2. Put the repository in a desired directory
-3. Installing required packages by running ‘python3 -m pip install -r requirements.txt’ in the project directory
+3. Installing required packages by running 
+   > python3 -m pip install -r requirements.txt
+   
+   in the project directory
 
 ## Invocation
 

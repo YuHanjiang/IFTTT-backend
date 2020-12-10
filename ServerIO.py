@@ -3,7 +3,6 @@ import re
 from Trigger import Trigger
 import json
 import requests
-from datetime import datetime
 
 
 def sanitize_url(url):
@@ -115,9 +114,8 @@ class ServerIO:
 
     def send_fcm_notification(self, trigger, token, os, clause_string):
         try:
-            now = datetime.now()
-            dt_string = now.strftime('%d/%m/%Y')
-            tm_string = now.strftime('%H:%M:%S')
+            dt_string = trigger.trigger_activation_date
+            tm_string = trigger.trigger_activation_time
             os_string = os[0][0]
             to_send = None
             header_dict = {

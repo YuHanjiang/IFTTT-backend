@@ -1,6 +1,7 @@
 import re
 import time
 from ServerIO import ServerIO
+from datetime import datetime
 
 
 # abstract Monitor class to be implemented in the backend of IFTTT
@@ -43,7 +44,15 @@ class Monitor:
             if result:
                 # if it is active sound alarm
                 if active == 1:
-                    print(self.triggerId, 'Alert', sep=' ')
+                    now = datetime.now()
+                    dt_string = now.strftime('%d/%m/%Y')
+                    tm_string = now.strftime('%H:%M:%S')
+                    print(dt_string, ', ', tm_string, ': ', self.triggerId, 'Alert', sep=' ')
+                    if self.trigger.trigger_activation_time == 'No':
+                        self.trigger.trigger_activation_time = tm_string
+                    if self.trigger.trigger_activation_date == 'No':
+                        self.trigger.trigger_activation_date = dt_string
+
                     self.serverIO.pushNotification(self.trigger, clause_met)
                     self.need_to_change_status = True
                     # active = 0

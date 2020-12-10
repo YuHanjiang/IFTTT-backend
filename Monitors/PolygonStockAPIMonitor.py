@@ -17,7 +17,7 @@ class PolygonStockAPIMonitor(Monitor):
             if r.status_code == 200:
                 stock_json = r.json()
                 closing_price = stock_json['results'][0]['c']
-                return func(closing_price, val)
+                return func(closing_price, val), closing_price
 
         except Exception:
             raise ValueError

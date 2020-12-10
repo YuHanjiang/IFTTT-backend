@@ -21,13 +21,13 @@ class WebsiteHealthChecker(Monitor):
         except Exception:
             raise ValueError
 
-        return func(int(r.status_code), val)
+        return func(int(r.status_code), val), int(r.status_code)
 
     def _ping_check(self, func, val):
         try:
             r = pythonping.ping(self.src, size=50)
             a = r.rtt_avg_ms
-            return func(float(a), val)
+            return func(float(a), val), float(a)
         except Exception:
             raise ValueError
 

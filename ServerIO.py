@@ -3,7 +3,6 @@ import re
 from Trigger import Trigger
 import json
 import requests
-from datetime import datetime
 
 
 def sanitize_url(url):
@@ -87,18 +86,11 @@ class ServerIO:
 
     # Sanitize url to make it compatible to requests module
 
-    def pushNotification(self, trigger, clause_list):
+    def pushNotification(self, trigger, s):
 
         cursor = self.db.cursor()
 
         # Adding all the conditions that are met into the pending_notifications
-        s = ""
-
-        for cl in clause_list:
-            for con in cl:
-                (comp, val) = con
-                s += str(comp) + str(val) + ","
-        s = s[:-1]
         cursor.execute("SELECT * FROM triggers where trigger_id = %s", (trigger.trigger_id,))
 
         # Without condition shows there is something wrong with the trigger
@@ -121,9 +113,8 @@ class ServerIO:
 
     def send_fcm_notification(self, trigger, token, os, clause_string):
         try:
-            now = datetime.now()
-            dt_string = now.strftime('%d/%m/%Y')
-            tm_string = now.strftime('%H:%M:%S')
+            dt_string = trigger.trigger_activation_date
+            tm_string = trigger.trigger_activation_time
             os_string = os[0][0]
             to_send = None
             header_dict = {

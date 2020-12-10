@@ -21,7 +21,7 @@ class SocketMonitor(Monitor):
         except:  
             suc = 0 
 
-        return func(suc,val)
+        return func(suc,val), suc
 
 def start(trigger):
     monitor = SocketMonitor(trigger)

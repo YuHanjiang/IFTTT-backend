@@ -20,7 +20,7 @@ class WeatherMonitor(Monitor):
                 weather_json = r.json()
                 if 'main' in weather_json and 'temp' in weather_json['main']:
                     temp = float(weather_json['main']['temp'])
-                    return func(temp, val)
+                    return func(temp, val), temp
         except Exception:
             raise ValueError
 
@@ -31,7 +31,7 @@ class WeatherMonitor(Monitor):
                 weather_json = r.json()
                 if 'main' in weather_json and 'humidity' in weather_json['main']:
                     hum = weather_json['main']['humidity']
-                    return func(hum, val)
+                    return func(hum, val), hum
 
         except Exception:
             raise ValueError

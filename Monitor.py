@@ -20,10 +20,14 @@ class Monitor:
                 funClause = self.funcList[i]
                 paraClause = self.paraList[i]
                 clauseResult = True
+                condition_met_string = ""
                 for j in range(len(funClause)):
                     try:
-                        clauseResult = clauseResult and funClause[j](paraClause[j][0], paraClause[j][1])
-
+                        current_result, real_value = funClause[j](paraClause[j][0], paraClause[j][1])
+                        clauseResult = clauseResult and current_result
+                        par, val_st = self.trigger.condition[i][j]
+                        if current_result:
+                            condition_met_string += par + '(' + str(real_value) + ')' + val_st + ','
                     # Handling url error
                     except ValueError:
                         self.trigger.terminated = True
@@ -33,7 +37,8 @@ class Monitor:
                 result = result or clauseResult
 
                 if clauseResult:
-                    clause_met.append(self.trigger.condition[i])
+                    if len(condition_met_string) >= 1:
+                        clause_met.append(condition_met_string[:-1])
 
             if result:
                 # if it is active sound alarm

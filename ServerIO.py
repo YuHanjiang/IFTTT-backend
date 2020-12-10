@@ -87,18 +87,11 @@ class ServerIO:
 
     # Sanitize url to make it compatible to requests module
 
-    def pushNotification(self, trigger, clause_list):
+    def pushNotification(self, trigger, s):
 
         cursor = self.db.cursor()
 
         # Adding all the conditions that are met into the pending_notifications
-        s = ""
-
-        for cl in clause_list:
-            for con in cl:
-                (comp, val) = con
-                s += str(comp) + str(val) + ","
-        s = s[:-1]
         cursor.execute("SELECT * FROM triggers where trigger_id = %s", (trigger.trigger_id,))
 
         # Without condition shows there is something wrong with the trigger
@@ -117,6 +110,7 @@ class ServerIO:
                 cursor.execute('SELECT os FROM users where os is not null and users.username = %s', (trigger.owner,))
                 os = cursor.fetchall()
                 if os is not None:
+                    print(s)
                     self.send_fcm_notification(trigger, token, os, s)
 
     def send_fcm_notification(self, trigger, token, os, clause_string):
